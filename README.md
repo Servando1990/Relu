@@ -1,2 +1,0 @@
-## Demand curve model
-
