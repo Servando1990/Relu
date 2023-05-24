@@ -9,38 +9,42 @@ class FeatureEngineeringProcess:
     def grouped_feature_eng(
         self,
         df: pd.DataFrame,
-        group_features: list,
-        features: list,
-        target_feature: str,
+        group_features: List[str],
+        features: List[str],
+
     ):
         """Transform aggregation based on grouping a set of features
 
         Args:
-            df (pd.DataFrame): Dataframe to be transformed
-            group_features (list): List of features selected to group the transformation.
+            df (pd.DataFrame): DataFrame to be transformed
+            group_features (list): List of features selected to group the transformation, ej SKU
             features (list): List of features to be transformed.
-            target_feature (str): Feature to be used in the aggregated transformation (Numerical)
+
+        Returns:
+            df: Transformed pd.DataFrame
+        """
+        #TODO: add more numerical transformations
+        for feature in features:
+            for group_feature in group_features:
+                df[f"{group_feature}_{feature}_mean"] = df.groupby(group_feature)[feature].transform("mean")
+                df[f"{group_feature}_{feature}_min"] = df.groupby(group_feature)[feature].transform("min")
+                df[f"{group_feature}_{feature}_max"] = df.groupby(group_feature)[feature].transform("max")
+
+        return df
+    
+    def compute_gmv(self, df: pd.DataFrame, window: int = 7):
+        """Compute GMV based on the quantity and price of the product
+
+        Args:
+            df (pd.DataFrame): DataFrame to be transformed
 
         Returns:
             df: Transformed pd.DataFrame
         """
 
-        for feature in features:
-            df[feature + "_sum"] = df.groupby(group_features)[target_feature].transform(
-                "sum"
-            )
-            df[feature + "_mean"] = df.groupby(group_features)[
-                target_feature
-            ].transform("mean")
-            df[feature + "_min"] = df.groupby(group_features)[target_feature].transform(
-                "min"
-            )
-            df[feature + "_max"] = df.groupby(group_features)[target_feature].transform(
-                "max"
-            )
-            df[feature + "_count"] = df.groupby(group_features)[
-                target_feature
-            ].transform("count")
+        df["gmv"] = df["quantity"] * df["price"] #TODO hardcoded variables
+        #compute gmv per product for the last N days
+        df["gmv_last_7_days"] = df.groupby("sku")["gmv"].transform(lambda x: x.rolling(window).sum())
 
         return df
 
