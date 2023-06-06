@@ -1,5 +1,5 @@
 import pandas as pd
-from typing import List
+from typing import List, Iterable
 import holidays
 import numpy as np
 
@@ -110,61 +110,56 @@ class FeatureEngineeringProcess:
 
         return df
     
-    def price_sales_correlation(data, feature, N, u_range, v_range):
-
+    def price_sales_correlation_features(self, 
+                          data: pd.DataFrame, 
+                          N: int, 
+                          u_range: Iterable[int], 
+                          v_range: Iterable[int]) -> pd.DataFrame:
         """
-        This function generates statistical features and correlation features for a given feature 
-        over the last N days in a dataframe.
+        Generate features for pricing model.
 
-        Parameters
-        ----------
-        data : pandas.DataFrame
-            The input dataframe, which must include 'price' and 'sales' columns.
-
-        feature : str
-            The feature to calculate statistics for. This must be either 'sales' or 'price'.
-
-        N : int
-            The number of past days to consider when generating features.
-
-        u_range : range
-            The range of exponents to use when calculating price-based correlation features.
-
-        v_range : range
-            The range of exponents to use when calculating sales-based correlation features.
-
-        Returns
-        -------
-        data : pandas.DataFrame
-            The dataframe with newly added features.
-
-        Raises
-        ------
-        Exception
-            If feature is not either 'sales' or 'price'.
+        :param data: DataFrame with 'price' and 'sales' columns.
+        :param N: Lookback period in days.
+        :param u_range: Range of values for u in correlation calculation.
+        :param v_range: Range of values for v in correlation calculation.
+        :return: DataFrame with generated features.
         """
 
-        # Generate average, min, max, SD features for the last N days
+        # Generate price features: average, min, max, SD for the last N days
         for i in range(N):
-            data[f'{feature}_{i}'] = data[feature].shift(i)
-        data[f'avg_{feature}_last_N_days'] = data[[f'{feature}_{i}' for i in range(N)]].mean(axis=1)
-        data[f'min_{feature}_last_N_days'] = data[[f'{feature}_{i}' for i in range(N)]].min(axis=1)
-        data[f'max_{feature}_last_N_days'] = data[[f'{feature}_{i}' for i in range(N)]].max(axis=1)
-        data[f'std_{feature}_last_N_days'] = data[[f'{feature}_{i}' for i in range(N)]].std(axis=1)
+            data[f'price_{i}'] = data['price'].shift(i)
+        data['avg_price_last_N_days'] = data[[f'price_{i}' for i in range(N)]].mean(axis=1)
+        data['min_price_last_N_days'] = data[[f'price_{i}' for i in range(N)]].min(axis=1)
+        data['max_price_last_N_days'] = data[[f'price_{i}' for i in range(N)]].max(axis=1)
+        data['std_price_last_N_days'] = data[[f'price_{i}' for i in range(N)]].std(axis=1)
 
-        # Generate correlation features between two features for the last N days
-        if feature == 'sales':
-            other_feature = 'price'
-        elif feature == 'price':
-            other_feature = 'sales'
-        else:
-            raise Exception("Feature name not recognized. It must be either 'sales' or 'price'.")
+        # Generate sales features: average, min, max, SD for the last N days
+        for i in range(N):
+            data[f'sales_{i}'] = data['sales'].shift(i)
+        data['avg_sales_last_N_days'] = data[[f'sales_{i}' for i in range(N)]].mean(axis=1)
+        data['min_sales_last_N_days'] = data[[f'sales_{i}' for i in range(N)]].min(axis=1)
+        data['max_sales_last_N_days'] = data[[f'sales_{i}' for i in range(N)]].max(axis=1)
+        data['std_sales_last_N_days'] = data[[f'sales_{i}' for i in range(N)]].std(axis=1)
 
-        for u in u_range: 
-            for v in v_range: 
-                data[f'f_corr_{u}_{v}'] = np.sum(data[other_feature]**u * data[feature]**v) / (np.sum(data[other_feature]**u) * np.sum(data[feature]**v))
+        # Generate correlation features between sales and prices for the last N days
+        for u in u_range:
+            for v in v_range:
+                data[f'f_corr_{u}_{v}'] = np.sum(data['price']**u * data['sales']**v) / (np.sum(data['price']**u) * np.sum(data['sales']**v))
+        
+        # Normalize price and sales features
+        price0 = data['price'].rolling(28).mean()  # or use some other method to compute price0
+        demand0 = data['sales'].rolling(28).mean()  # or use some other method to compute demand0
+
+        data['avg_price_last_N_days_normalized'] = np.log(data['avg_price_last_N_days'] / price0)
+        data['avg_sales_last_N_days_normalized'] = np.log(data['avg_sales_last_N_days'] / demand0)
+
+        data['std_price_last_N_days_normalized'] = data['std_price_last_N_days'] / data['avg_price_last_N_days']
+        data['std_sales_last_N_days_normalized'] = data['std_sales_last_N_days'] / data['avg_sales_last_N_days']
 
         return data
+
+    
+
 
 
     
