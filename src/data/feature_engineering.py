@@ -1,7 +1,7 @@
 import pandas as pd
 from typing import List
 import holidays
-
+import numpy as np
 
 
 
@@ -109,6 +109,63 @@ class FeatureEngineeringProcess:
             df[date_feature + "_holidays"] = df[date_feature].dt.date.map(holiday_dates).notna().astype(int)
 
         return df
+    
+    def price_sales_correlation(data, feature, N, u_range, v_range):
+
+        """
+        This function generates statistical features and correlation features for a given feature 
+        over the last N days in a dataframe.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            The input dataframe, which must include 'price' and 'sales' columns.
+
+        feature : str
+            The feature to calculate statistics for. This must be either 'sales' or 'price'.
+
+        N : int
+            The number of past days to consider when generating features.
+
+        u_range : range
+            The range of exponents to use when calculating price-based correlation features.
+
+        v_range : range
+            The range of exponents to use when calculating sales-based correlation features.
+
+        Returns
+        -------
+        data : pandas.DataFrame
+            The dataframe with newly added features.
+
+        Raises
+        ------
+        Exception
+            If feature is not either 'sales' or 'price'.
+        """
+
+        # Generate average, min, max, SD features for the last N days
+        for i in range(N):
+            data[f'{feature}_{i}'] = data[feature].shift(i)
+        data[f'avg_{feature}_last_N_days'] = data[[f'{feature}_{i}' for i in range(N)]].mean(axis=1)
+        data[f'min_{feature}_last_N_days'] = data[[f'{feature}_{i}' for i in range(N)]].min(axis=1)
+        data[f'max_{feature}_last_N_days'] = data[[f'{feature}_{i}' for i in range(N)]].max(axis=1)
+        data[f'std_{feature}_last_N_days'] = data[[f'{feature}_{i}' for i in range(N)]].std(axis=1)
+
+        # Generate correlation features between two features for the last N days
+        if feature == 'sales':
+            other_feature = 'price'
+        elif feature == 'price':
+            other_feature = 'sales'
+        else:
+            raise Exception("Feature name not recognized. It must be either 'sales' or 'price'.")
+
+        for u in u_range: 
+            for v in v_range: 
+                data[f'f_corr_{u}_{v}'] = np.sum(data[other_feature]**u * data[feature]**v) / (np.sum(data[other_feature]**u) * np.sum(data[feature]**v))
+
+        return data
+
 
     
 
