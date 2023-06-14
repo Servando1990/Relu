@@ -1,5 +1,5 @@
-# ignore pyc files
-*.pyc
+# ignore pyc files 
+**/*.pyc
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -17,9 +17,10 @@ __pycache__/
 /docs/_build/
 /src/*.egg-info/
 __pycache__/
-/*.csv
+**/*.csv
+**/*.xlsx
 /*.json
-/*.xlsx
+**/*.xlsx
 
 /*.DS_Store
 
