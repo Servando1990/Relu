@@ -111,52 +111,6 @@ class FeatureEngineeringProcess:
 
         return df
     
-    def price_sales_correlation_features(self, 
-                          data: pd.DataFrame, 
-                          N: int, 
-                          u_range: Iterable[int], 
-                          v_range: Iterable[int]) -> pd.DataFrame:
-        """
-        Generate features for pricing model.
-
-        :param data: DataFrame with 'price' and 'sales' columns.
-        :param N: Lookback period in days.
-        :param u_range: Range of values for u in correlation calculation.
-        :param v_range: Range of values for v in correlation calculation.
-        :return: DataFrame with generated features.
-        """
-
-        # Generate price features: average, min, max, SD for the last N days
-        for i in range(N):
-            data[f'price_{i}'] = data['price'].shift(i)
-        data['avg_price_last_N_days'] = data[[f'price_{i}' for i in range(N)]].mean(axis=1)
-        data['min_price_last_N_days'] = data[[f'price_{i}' for i in range(N)]].min(axis=1)
-        data['max_price_last_N_days'] = data[[f'price_{i}' for i in range(N)]].max(axis=1)
-        data['std_price_last_N_days'] = data[[f'price_{i}' for i in range(N)]].std(axis=1)
-
-        # Generate sales features: average, min, max, SD for the last N days
-        for i in range(N):
-            data[f'sales_{i}'] = data['sales'].shift(i)
-        data['avg_sales_last_N_days'] = data[[f'sales_{i}' for i in range(N)]].mean(axis=1)
-        data['min_sales_last_N_days'] = data[[f'sales_{i}' for i in range(N)]].min(axis=1)
-        data['max_sales_last_N_days'] = data[[f'sales_{i}' for i in range(N)]].max(axis=1)
-        data['std_sales_last_N_days'] = data[[f'sales_{i}' for i in range(N)]].std(axis=1)
-
-        # Generate correlation features between sales and prices for the last N days
-        for u in u_range:
-            for v in v_range:
-                data[f'f_corr_{u}_{v}'] = np.sum(data['price']**u * data['sales']**v) / (np.sum(data['price']**u) * np.sum(data['sales']**v)) 
-                #np.sum(data['price']**u * data['sales']**v) / (np.sum(data['price']**u) * np.sum(data['sales']**v))
-        
-        # Normalize price and sales features
-        price0 = data['price'].rolling(28).mean()  # or use some other method to compute price0
-        demand0 = data['sales'].rolling(28).mean()  # or use some other method to compute demand0
-
-        data['avg_price_last_N_days_normalized'] = np.log(data['avg_price_last_N_days'] / price0)
-        data['avg_sales_last_N_days_normalized'] = np.log(data['avg_sales_last_N_days'] / demand0)
-
-        data['std_price_last_N_days_normalized'] = data['std_price_last_N_days'] / data['avg_price_last_N_days']
-        data['std_sales_last_N_days_normalized'] = data['std_sales_last_N_days'] / data['avg_sales_last_N_days']
 
         return data
     def price_sales_correlation_features_updated(self, data: pd.DataFrame, 
@@ -201,25 +155,55 @@ class FeatureEngineeringProcess:
             self, 
             data: pd.DataFrame, 
             N: int, 
-            long_period: int = 28) -> pd.DataFrame:
+            long_period: int ) -> pd.DataFrame:
+        # Generate docstring
+        """ Normalize features for pricing model.  
+        Args:
+            data (pd.DataFrame): DataFrame
+            N (int): represents the number of days for a short-term average. 
+                This is the window of time over which you calculate the average price and sales. 
+                For example, if you set N to 7, you calculate the average price and sales over the last 7 days.
+            long_period (int): represents the number of days over a longer-term average. 
+                This is used to calculate the reference price (price0) and reference demand (demand0) which are used to normalize the short-term average.
+                For example, if long_period is set to 28, it means that you calculate the average price and average demand over the last 28 days to use as the reference values for normalization.
+        Returns:
+            data (pd.DataFrame): DataFrame with normalized features.
+        """
+        
+        
+        # Sort data by SKU and date
+        data = data.sort_values(by=['SKU', 'Date'])
+
+        grouped = data.groupby('SKU')
+
+        # Placeholder DataFrame for the results
+        results = pd.DataFrame()
+
+        for sku, group in grouped:
     
-        # Calculate average price and sales for the last N days
-        data['avg_price_last_N_days'] = data['price'].rolling(window=N).mean()
-        data['avg_sales_last_N_days'] = data['sales'].rolling(window=N).mean()
-        
-        # Calculate reference price and demand
-        price0 = data['price'].rolling(window=long_period).mean()
-        demand0 = data['sales'].rolling(window=long_period).mean()
+            # Calculate average price and sales for the last N days
+            group['avg_price_last_N_days'] = group['price'].rolling(window=N).mean()
+            group['avg_sales_last_N_days'] = group['sales'].rolling(window=N).mean()
+            
+            # Calculate reference price and demand
+            price0 = group['price'].rolling(window=long_period).mean()
+            demand0 = group['sales'].rolling(window=long_period).mean()
 
-        # Normalize average price and sales
-        data['normalized_log_avg_price'] = np.log(data['avg_price_last_N_days'] / price0)
-        data['normalized_log_avg_sales'] = np.log(data['avg_sales_last_N_days'] / demand0)
+            # Normalize average price and sales
+            group['normalized_log_avg_price'] = np.log(group['avg_price_last_N_days'] / price0)
+            group['normalized_log_avg_sales'] = np.log(group['avg_sales_last_N_days'] / demand0)
 
-        # Normalize standard deviation
-        data['normalized_std_price'] = data['price'].rolling(window=N).std() / data['avg_price_last_N_days']
-        data['normalized_std_sales'] = data['sales'].rolling(window=N).std() / data['avg_sales_last_N_days']
+            # Normalize standard deviation
+            group['normalized_std_price'] = group['price'].rolling(window=N).std() / group['avg_price_last_N_days']
+            group['normalized_std_sales'] = group['sales'].rolling(window=N).std() / group['avg_sales_last_N_days']
+
+            # Drop 'avg_price_last_N_days' and 'avg_sales_last_N_days' columns
+            group = group.drop(columns=['avg_price_last_N_days', 'avg_sales_last_N_days'])
+
+            # Append the group to the results Dataframe
+            results = pd.concat([results, group])
         
-        return data
+        return results
 
     def filter_stability_periods(self, 
                                  data: pd.DataFrame,
