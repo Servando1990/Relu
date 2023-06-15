@@ -6,6 +6,8 @@ __pycache__/
 *$py.class
 
 .vscode/
+# ignore .pyc files
+*.pyc
 
 # C extensions
 *.so

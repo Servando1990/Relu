@@ -2,6 +2,7 @@ import pandas as pd
 from typing import List, Iterable
 import holidays
 import numpy as np
+from sympy import group
 
 
 
@@ -162,23 +163,39 @@ class FeatureEngineeringProcess:
                                      N: int, 
                                      u_range: Iterable[int], 
                                      v_range: Iterable[int]) -> pd.DataFrame:
-    
-        # Loop through each combination of u and v
-        for u in u_range:
-            for v in v_range:
-                # Calculate the numerator part of the formula
-                numerator = (data['price']**u * data['sales']**v).rolling(window=N).sum()
-                
-                # Calculate the sum of price to the power of u over the last N days
-                sum_price_u = data['price']**u.rolling(window=N).sum()
-                
-                # Calculate the sum of sales to the power of v over the last N days
-                sum_sales_v = data['sales']**v.rolling(window=N).sum()
-                
-                # Calculate the correlation feature according to the formula
-                data[f'f_corr_{u}_{v}'] = numerator / (sum_price_u * sum_sales_v)
         
-        return data
+        # Sort data by SKU and date
+        data = data.sort_values(by=['SKU', 'Date']) #TODO hardcoded variables
+
+        # Group the data by SKU
+        grouped = data.groupby('SKU')
+
+        # Placeholder DataFrame for the results
+        results = pd.DataFrame()
+
+        for sku, group in grouped:
+        # Loop through each combination of u and v
+            for u in u_range:
+                for v in v_range:
+                    # Calculate the numerator part of the formula
+                    numerator = (group['price']**u * group['sales']**v).rolling(window=N).sum()
+                    
+                    # Calculate the sum of price to the power of u over the last N days
+                    sum_price_u = (group['price']**u).rolling(window=N).sum()
+                    
+                    # Calculate the sum of sales to the power of v over the last N days
+                    sum_sales_v = (group['sales']**v).rolling(window=N).sum()
+                    
+                    # Calculate the feature f_corr for this combination of u and v
+                    f_corr = numerator / (sum_price_u * sum_sales_v)
+
+                    # Add the feature to the group
+                    group[f'f_corr_{u}_{v}'] = f_corr
+
+            # Append the group to the results Dataframe
+            results = pd.concat([results, group])
+        
+        return results
     
     def normalize_features(
             self, 
@@ -228,6 +245,8 @@ class FeatureEngineeringProcess:
         data = data.drop(indices_to_remove)
         
         return data
+    
+
 
 
     
