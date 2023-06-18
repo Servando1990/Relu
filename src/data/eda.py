@@ -38,13 +38,7 @@ class Eda:
         ).any(axis=1)
         return outliers
     
-    # Show statistics
-    df.groupby('cohort').describe().T.style.background_gradient(cmap='coolwarm')
 
-    # Display correlations
-    display(df.corr().style.background_gradient(cmap='coolwarm'))
-
-    # Display variance influence factor
 
 
 

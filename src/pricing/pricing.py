@@ -34,3 +34,20 @@ c = ...
 
 # Run the pricing algorithm to find the optimal value of λ
 #optimal_lambda = pricing_algorithm(P0, demand_curve, prices, predicted_sales, c)
+
+def pricing_algorithm(P0, demand_curve, prices, predicted_sales, c, initial_lambda=5, delta_lambda=4):
+    lambda_value = initial_lambda
+    while True:
+        gmv0 = demand_curve(P0, prices, predicted_sales)
+        r_lambda = ...  # Update this based on lambda_value
+        E_r_lambda = ...  # Update this based on lambda_value
+
+        current_profit = profit(gmv0, r_lambda, E_r_lambda, c, P0)
+        if current_profit < 0:
+            lambda_value += delta_lambda
+        elif current_profit > 0:
+            lambda_value -= delta_lambda
+        else:
+            break
+
+    return lambda_value

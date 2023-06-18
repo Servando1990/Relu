@@ -1,0 +1,8 @@
+"data/raw/Amazon Sale Report.csv"
+"data/raw/Cloud Warehouse Compersion Chart.csv"
+"data/raw/Expense IIGF.csv"
+"data/raw/International sale Report.csv"
+"data/raw/May-2022.csv"
+"data/raw/P LMarch2021.csv"
+"data/raw/Sale Report.csv"
+"data/raw/synthetic_data.csv"
