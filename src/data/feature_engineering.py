@@ -3,10 +3,33 @@ from typing import List, Iterable
 import holidays
 import numpy as np
 from sympy import group
+import logging
+
+
 
 
 
 class FeatureEngineeringProcess:
+    def __init__(self):
+        # Setup logging
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
+
+        # create a file handler
+        handler = logging.FileHandler('feature_engineering.log')
+        handler.setLevel(logging.INFO)
+
+        # create a logging format
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+
+        # add the handlers to the logger
+        self.logger.addHandler(handler)
+
+        # store parameters
+        self.params = {}
+
+
     def grouped_feature_eng(
         self,
         df: pd.DataFrame,
@@ -148,6 +171,11 @@ class FeatureEngineeringProcess:
 
             # Append the group to the results Dataframe
             results = pd.concat([results, group])
+        # log and save parameters of the function
+        self.logger.info(f"price_sales_correlation_features_updated: N={N}, u_range={u_range}, v_range={v_range}")
+        # save parameters of the function
+        self.params['price_sales_correlation_features_updated'] = {'N': N, 'u_range': u_range, 'v_range': v_range}
+
         
         return results
     
@@ -186,12 +214,16 @@ class FeatureEngineeringProcess:
             group['avg_sales_last_N_days'] = group['sales'].rolling(window=N).mean()
             
             # Calculate reference price and demand
-            price0 = group['price'].rolling(window=long_period).mean()
-            demand0 = group['sales'].rolling(window=long_period).mean()
+            price0 = group['price'].rolling(window=long_period).mean().replace(0, np.nan)
+            demand0 = group['sales'].rolling(window=long_period).mean().replace(0, np.nan)
 
             # Normalize average price and sales
-            group['normalized_log_avg_price'] = np.log(group['avg_price_last_N_days'] / price0)
-            group['normalized_log_avg_sales'] = np.log(group['avg_sales_last_N_days'] / demand0)
+            group['normalized_avg_price'] = group['avg_price_last_N_days'] / price0
+            group['normalized_avg_sales'] = group['avg_sales_last_N_days'] / demand0
+            
+            # Apply log transformation
+            group['normalized_log_avg_price'] = np.log(group['avg_price_last_N_days'] / price0).clip(lower=1e-9)
+            group['normalized_log_avg_sales'] = np.log(group['avg_sales_last_N_days'] / demand0).clip(lower=1e-9)
 
             # Normalize standard deviation
             group['normalized_std_price'] = group['price'].rolling(window=N).std() / group['avg_price_last_N_days']
@@ -202,42 +234,51 @@ class FeatureEngineeringProcess:
 
             # Append the group to the results Dataframe
             results = pd.concat([results, group])
+        # log and save parameters of the function
+        self.logger.info(f"normalize_features: N={N}, long_period={long_period}")
+        # save parameters of the function
+        self.params['normalize_features'] = {'N': N, 'long_period': long_period}
         
         return results
 
     def filter_stability_periods(self, 
                                  data: pd.DataFrame,
+                                    N: int,
                                    threshold: float = 0.05, 
-                                   removal_percentage: float = 0.98) -> pd.DataFrame:
+                                   removal_percentage: float = 0.98,
+                                   ) -> pd.DataFrame:
         
         # Sort the data by SKU and date
-        data = data.sort_values(by=['SKU', 'date'])
+        data = data.sort_values(by=['SKU', 'Date'])
         
         # Calculate the 42-day average price
-        data['avg_price_last_42_days'] = data.groupby('SKU')['price'].transform(lambda x: x.rolling(window=42).mean())
+        data[f'avg_price_last_{N}_days'] = data.groupby('SKU')['price'].transform(lambda x: x.rolling(window=N).mean())
         
-        # Calculate the absolute percentage difference between the current price and the 42-day average price
-        data['price_variation'] = abs(data['price'] - data['avg_price_last_42_days']) / data['avg_price_last_42_days']
+        # Calculate the absolute percentage difference between the current price and the N-day average price
+        data['price_variation'] = abs(data['price'] - data[f'avg_price_last_{N}_days']) / data[f'avg_price_last_{N}_days']
+
+        # Mark rows where N-day average cannot be calculated due to insufficient data
+        data['insufficient_data'] = data[f'avg_price_last_{N}_days'].isna() & data['price'].notna() 
+
+        # Handle NaN in 'price_variation' due to insufficient data differently (e.g. set them to a placeholder value)
+        data.loc[data['insufficient_data'], 'price_variation'] = 0 # or some other placeholder value
         
         # Identify rows where the price varied by less than the threshold from the 42-day average price
-        stability_periods = data['price_variation'] < threshold
+        stability_periods = (data['price_variation'] < threshold) & ~data['insufficient_data']
         
         # Randomly select 98% of the stability periods to be removed
         indices_to_remove = data[stability_periods].sample(frac=removal_percentage).index
         
         # Remove the selected indices from the data
         data = data.drop(indices_to_remove)
+
+        # log and save parameters of the function
+        self.logger.info(f"filter_stability_periods: N={N}, threshold={threshold}, removal_percentage={removal_percentage}")
+        # save parameters of the function
+        self.params['filter_stability_periods'] = {'N': N, 'threshold': threshold, 'removal_percentage': removal_percentage}
         
         return data
-    
 
 
 
-    
-
-
-
-    
-
-    
 
