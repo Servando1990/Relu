@@ -20,6 +20,9 @@ def perform_inference(train_data, test_data):
     # Group test data by SKU
     grouped = test_data.groupby('SKU')
 
+    # Create an empty dataframe to store the results
+    results = pd.DataFrame(columns=['SKU', 'price', 'predicted_sales_xgboost'])
+
     # Perform inference for each SKU in test data
     for sku, group_data in grouped:
         print(f"Performing inference for SKU: {sku}")
@@ -58,7 +61,14 @@ def perform_inference(train_data, test_data):
             elapsed_time = time.time() - start_time
             print(f"Price: {price}, XGBoost Predicted Sales: {predicted_sales_xgboost}, Elapsed Time: {elapsed_time:.4f} seconds")
 
+            # Append the results to the dataframe
+            results = results.concat({'SKU': sku, 'price': price, 'predicted_sales_xgboost': predicted_sales_xgboost}, ignore_index=True)
+
+
+
         print("\n")
+
+    return results
     
 @stub.local_entrypoint()
 def main():
@@ -69,5 +79,6 @@ def main():
     
     # Perform inference using the trained model
     
-    perform_inference.call(train_data, test_data)
+    df = perform_inference.call(train_data, test_data)
+    df.to_csv('/Users/servandodavidtorresgarcia/Servando/Relu/Relu/data/processed/predictions.csv', index=False)
 
