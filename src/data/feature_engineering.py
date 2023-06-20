@@ -65,7 +65,8 @@ class FeatureEngineeringProcess:
         Returns:
             df: Transformed pd.DataFrame
         """
-
+        # Sort values by sku and date
+        df = df.sort_values(by=["SKU", "Date"])
         df["gmv"] = df["Qty"] * df["price"] #TODO hardcoded variables
         #compute gmv per product for the last N days
         df[f"gmv_last_{window}_days"] = df.groupby("SKU")["gmv"].transform(lambda x: x.rolling(window).sum())
