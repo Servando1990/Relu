@@ -1,6 +1,7 @@
 
 import modal
 import pandas as pd
+import time
 
 xgb_image = modal.Image.debian_slim().pip_install("pandas==1.4.2", "xgboost", "scikit-learn")
 stub = modal.Stub("example-xgb-started")
@@ -47,11 +48,15 @@ def perform_inference(train_data, test_data):
             test_features = test_features.drop(['SKU', 'sales'])
             #print(f"Test features: {test_features.shape}")
  
-
+            # Start the timer
+            start_time = time.time()
 
             # Predict sales using the XGBoost model and print the result
             predicted_sales_xgboost = xgboost_model.predict(test_features.values.reshape(1, -1))[0]
-            print(f"Price: {price}, XGBoost Predicted Sales: {predicted_sales_xgboost}")
+
+            # Stop the timer
+            elapsed_time = time.time() - start_time
+            print(f"Price: {price}, XGBoost Predicted Sales: {predicted_sales_xgboost}, Elapsed Time: {elapsed_time:.4f} seconds")
 
         print("\n")
     
@@ -63,5 +68,6 @@ def main():
     test_data = pd.read_pickle('/Users/servandodavidtorresgarcia/Servando/Relu/Relu/data/processed/test.pkl')
     
     # Perform inference using the trained model
+    
     perform_inference.call(train_data, test_data)
 
