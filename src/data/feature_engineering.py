@@ -66,9 +66,10 @@ class FeatureEngineeringProcess:
             df: Transformed pd.DataFrame
         """
 
-        df["gmv"] = df["quantity"] * df["price"] #TODO hardcoded variables
+        df["gmv"] = df["Qty"] * df["price"] #TODO hardcoded variables
         #compute gmv per product for the last N days
-        df["gmv_last_7_days"] = df.groupby("sku")["gmv"].transform(lambda x: x.rolling(window).sum())
+        df[f"gmv_last_{window}_days"] = df.groupby("SKU")["gmv"].transform(lambda x: x.rolling(window).sum())
+
 
         return df
 
