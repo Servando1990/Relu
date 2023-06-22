@@ -77,7 +77,7 @@ def perform_inference(train_data, test_data):
 
 @stub.function(image=xgb_image)
 def find_optimal_price(sku_row, c=10, s=2, P0=100):
-    print(f'sku_row content: {sku_row}')
+
     # Extracting SKU, price and predicted sales
     sku = sku_row['SKU']
     price = sku_row['price']
@@ -130,7 +130,8 @@ def main():
     start_time = time.time()
     predicted_sales = pd.read_csv('/Users/servandodavidtorresgarcia/Servando/Relu/Relu/data/processed/predictions.csv')
 
-    optimal_prices = predicted_sales.apply(find_optimal_price) #FIXME: this is not working
+    optimal_prices = predicted_sales.apply(find_optimal_price, axis=1)
+    
     result_df = pd.DataFrame({'SKU': df['SKU'], 'optimal_prices': optimal_prices})
     result_df.to_csv('/Users/servandodavidtorresgarcia/Servando/Relu/Relu/data/processed/optimal_prices.csv', index=False)
     # stop the timer
