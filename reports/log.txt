@@ -1,0 +1,1012 @@
+
+
+Processing SKU: SET435-KR-NP-XXL
+Original Price: 1538.9, Predicted Sales: 1.157756805419922
+Starting grid search for SKU: SET435-KR-NP-XXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET435-KR-NP-XXL: 15.145631067961165, Elapsed Time: 0.0532 seconds
+
+
+Processing SKU: SET435-KR-NP-XXL
+Original Price: 1608.85, Predicted Sales: 1.1232975721359253
+Starting grid search for SKU: SET435-KR-NP-XXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET435-KR-NP-XXL: 15.145631067961165, Elapsed Time: 0.0573 seconds
+
+
+Processing SKU: SET435-KR-NP-XXXL
+Original Price: 1399.0, Predicted Sales: 1.195112228393555
+Starting grid search for SKU: SET435-KR-NP-XXXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET435-KR-NP-XXXL: 15.145631067961165, Elapsed Time: 0.0592 seconds
+
+
+Processing SKU: SET435-KR-NP-XXXL
+Original Price: 1259.1, Predicted Sales: 1.195259690284729
+Starting grid search for SKU: SET435-KR-NP-XXXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET435-KR-NP-XXXL: 15.145631067961165, Elapsed Time: 0.0555 seconds
+
+
+Processing SKU: SET435-KR-NP-XXXL
+Original Price: 1189.15, Predicted Sales: 1.195259690284729
+Starting grid search for SKU: SET435-KR-NP-XXXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET435-KR-NP-XXXL: 15.145631067961165, Elapsed Time: 0.0523 seconds
+
+
+Processing SKU: SET435-KR-NP-XXXL
+Original Price: 1538.9, Predicted Sales: 1.157756805419922
+Starting grid search for SKU: SET435-KR-NP-XXXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET435-KR-NP-XXXL: 15.145631067961165, Elapsed Time: 0.0648 seconds
+
+
+Processing SKU: SET435-KR-NP-XXXL
+Original Price: 1608.85, Predicted Sales: 1.1232975721359253
+Starting grid search for SKU: SET435-KR-NP-XXXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET435-KR-NP-XXXL: 15.145631067961165, Elapsed Time: 0.0614 seconds
+
+
+Processing SKU: SET436-KR-NP-L
+Original Price: 1399.0, Predicted Sales: 1.195112228393555
+Starting grid search for SKU: SET436-KR-NP-L
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-L: 15.145631067961165, Elapsed Time: 0.0525 seconds
+
+
+Processing SKU: SET436-KR-NP-L
+Original Price: 1259.1, Predicted Sales: 1.195259690284729
+Starting grid search for SKU: SET436-KR-NP-L
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-L: 15.145631067961165, Elapsed Time: 0.0550 seconds
+
+
+Processing SKU: SET436-KR-NP-L
+Original Price: 1189.15, Predicted Sales: 1.195259690284729
+Starting grid search for SKU: SET436-KR-NP-L
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-L: 15.145631067961165, Elapsed Time: 0.0600 seconds
+
+
+Processing SKU: SET436-KR-NP-L
+Original Price: 1538.9, Predicted Sales: 1.157756805419922
+Starting grid search for SKU: SET436-KR-NP-L
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-L: 15.145631067961165, Elapsed Time: 0.0633 seconds
+
+
+Processing SKU: SET436-KR-NP-L
+Original Price: 1608.85, Predicted Sales: 1.1232975721359253
+Starting grid search for SKU: SET436-KR-NP-L
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-L: 15.145631067961165, Elapsed Time: 0.0510 seconds
+
+
+Processing SKU: SET436-KR-NP-M
+Original Price: 1399.0, Predicted Sales: 1.566397190093994
+Starting grid search for SKU: SET436-KR-NP-M
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-M: 15.145631067961165, Elapsed Time: 0.0534 seconds
+
+
+Processing SKU: SET436-KR-NP-M
+Original Price: 1259.1, Predicted Sales: 1.6105058193206787
+Starting grid search for SKU: SET436-KR-NP-M
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-M: 15.145631067961165, Elapsed Time: 0.0608 seconds
+
+
+Processing SKU: SET436-KR-NP-M
+Original Price: 1189.15, Predicted Sales: 1.6105058193206787
+Starting grid search for SKU: SET436-KR-NP-M
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-M: 15.145631067961165, Elapsed Time: 0.0753 seconds
+
+
+Processing SKU: SET436-KR-NP-M
+Original Price: 1538.9, Predicted Sales: 1.529041767120361
+Starting grid search for SKU: SET436-KR-NP-M
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-M: 15.145631067961165, Elapsed Time: 0.1566 seconds
+
+
+Processing SKU: SET436-KR-NP-M
+Original Price: 1608.85, Predicted Sales: 1.5019981861114502
+Starting grid search for SKU: SET436-KR-NP-M
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-M: 15.145631067961165, Elapsed Time: 0.0604 seconds
+
+
+Processing SKU: SET436-KR-NP-S
+Original Price: 1399.0, Predicted Sales: 1.195112228393555
+Starting grid search for SKU: SET436-KR-NP-S
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-S: 15.145631067961165, Elapsed Time: 0.0633 seconds
+
+
+Processing SKU: SET436-KR-NP-S
+Original Price: 1259.1, Predicted Sales: 1.195259690284729
+Starting grid search for SKU: SET436-KR-NP-S
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-S: 15.145631067961165, Elapsed Time: 0.0613 seconds
+
+
+Processing SKU: SET436-KR-NP-S
+Original Price: 1189.15, Predicted Sales: 1.195259690284729
+Starting grid search for SKU: SET436-KR-NP-S
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-S: 15.145631067961165, Elapsed Time: 0.0515 seconds
+
+
+Processing SKU: SET436-KR-NP-S
+Original Price: 1538.9, Predicted Sales: 1.157756805419922
+Starting grid search for SKU: SET436-KR-NP-S
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-S: 15.145631067961165, Elapsed Time: 0.0540 seconds
+
+
+Processing SKU: SET436-KR-NP-S
+Original Price: 1608.85, Predicted Sales: 1.1232975721359253
+Starting grid search for SKU: SET436-KR-NP-S
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-S: 15.145631067961165, Elapsed Time: 0.0619 seconds
+
+
+Processing SKU: SET436-KR-NP-XL
+Original Price: 1399.0, Predicted Sales: 1.195112228393555
+Starting grid search for SKU: SET436-KR-NP-XL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XL: 15.145631067961165, Elapsed Time: 0.0607 seconds
+
+
+Processing SKU: SET436-KR-NP-XL
+Original Price: 1259.1, Predicted Sales: 1.195259690284729
+Starting grid search for SKU: SET436-KR-NP-XL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XL: 15.145631067961165, Elapsed Time: 0.0591 seconds
+
+
+Processing SKU: SET436-KR-NP-XL
+Original Price: 1189.15, Predicted Sales: 1.195259690284729
+Starting grid search for SKU: SET436-KR-NP-XL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XL: 15.145631067961165, Elapsed Time: 0.0530 seconds
+
+
+Processing SKU: SET436-KR-NP-XL
+Original Price: 1538.9, Predicted Sales: 1.157756805419922
+Starting grid search for SKU: SET436-KR-NP-XL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XL: 15.145631067961165, Elapsed Time: 0.0623 seconds
+
+
+Processing SKU: SET436-KR-NP-XL
+Original Price: 1608.85, Predicted Sales: 1.1232975721359253
+Starting grid search for SKU: SET436-KR-NP-XL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XL: 15.145631067961165, Elapsed Time: 0.0640 seconds
+
+
+Processing SKU: SET436-KR-NP-XS
+Original Price: 1399.0, Predicted Sales: 1.195112228393555
+Starting grid search for SKU: SET436-KR-NP-XS
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XS: 15.145631067961165, Elapsed Time: 0.0524 seconds
+
+
+Processing SKU: SET436-KR-NP-XS
+Original Price: 1259.1, Predicted Sales: 1.195259690284729
+Starting grid search for SKU: SET436-KR-NP-XS
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XS: 15.145631067961165, Elapsed Time: 0.0542 seconds
+
+
+Processing SKU: SET436-KR-NP-XS
+Original Price: 1189.15, Predicted Sales: 1.195259690284729
+Starting grid search for SKU: SET436-KR-NP-XS
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XS: 15.145631067961165, Elapsed Time: 0.0516 seconds
+
+
+Processing SKU: SET436-KR-NP-XS
+Original Price: 1538.9, Predicted Sales: 1.157756805419922
+Starting grid search for SKU: SET436-KR-NP-XS
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XS: 15.145631067961165, Elapsed Time: 0.0563 seconds
+
+
+Processing SKU: SET436-KR-NP-XS
+Original Price: 1608.85, Predicted Sales: 1.1232975721359253
+Starting grid search for SKU: SET436-KR-NP-XS
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XS: 15.145631067961165, Elapsed Time: 0.0518 seconds
+
+
+Processing SKU: SET436-KR-NP-XXL
+Original Price: 1399.0, Predicted Sales: 1.195112228393555
+Starting grid search for SKU: SET436-KR-NP-XXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XXL: 15.145631067961165, Elapsed Time: 0.0545 seconds
+
+
+Processing SKU: SET436-KR-NP-XXL
+Original Price: 1259.1, Predicted Sales: 1.195259690284729
+Starting grid search for SKU: SET436-KR-NP-XXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XXL: 15.145631067961165, Elapsed Time: 0.1169 seconds
+
+
+Processing SKU: SET436-KR-NP-XXL
+Original Price: 1189.15, Predicted Sales: 1.195259690284729
+Starting grid search for SKU: SET436-KR-NP-XXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XXL: 15.145631067961165, Elapsed Time: 0.0785 seconds
+
+
+Processing SKU: SET436-KR-NP-XXL
+Original Price: 1538.9, Predicted Sales: 1.157756805419922
+Starting grid search for SKU: SET436-KR-NP-XXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XXL: 15.145631067961165, Elapsed Time: 0.0609 seconds
+
+
+Processing SKU: SET436-KR-NP-XXL
+Original Price: 1608.85, Predicted Sales: 1.1232975721359253
+Starting grid search for SKU: SET436-KR-NP-XXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XXL: 15.145631067961165, Elapsed Time: 0.0545 seconds
+
+
+Processing SKU: SET436-KR-NP-XXXL
+Original Price: 1399.0, Predicted Sales: 1.1201153993606567
+Starting grid search for SKU: SET436-KR-NP-XXXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XXXL: 15.145631067961165, Elapsed Time: 0.0565 seconds
+
+
+Processing SKU: SET436-KR-NP-XXXL
+Original Price: 1259.1, Predicted Sales: 1.1642240285873413
+Starting grid search for SKU: SET436-KR-NP-XXXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XXXL: 15.145631067961165, Elapsed Time: 0.0537 seconds
+
+
+Processing SKU: SET436-KR-NP-XXXL
+Original Price: 1189.15, Predicted Sales: 1.1642240285873413
+Starting grid search for SKU: SET436-KR-NP-XXXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XXXL: 15.145631067961165, Elapsed Time: 0.0765 seconds
+
+
+Processing SKU: SET436-KR-NP-XXXL
+Original Price: 1538.9, Predicted Sales: 1.082759976387024
+Starting grid search for SKU: SET436-KR-NP-XXXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XXXL: 15.145631067961165, Elapsed Time: 0.0598 seconds
+
+
+Processing SKU: SET436-KR-NP-XXXL
+Original Price: 1608.85, Predicted Sales: 1.0557163953781128
+Starting grid search for SKU: SET436-KR-NP-XXXL
+
+Processing Lambda Multiplier: 3
+Final Optimal Price: 15.145631067961165, Final Lambda Value: 3.12
+Optimal Price for Lambda Multiplier 3: 15.145631067961165
+Optimal Lambda Value for Lambda Multiplier 3: 3.12
+
+Processing Lambda Multiplier: 4
+Final Optimal Price: 16.124031007751938, Final Lambda Value: 4.16
+Optimal Price for Lambda Multiplier 4: 16.124031007751938
+Optimal Lambda Value for Lambda Multiplier 4: 4.16
+
+Processing Lambda Multiplier: 5
+Final Optimal Price: 16.774193548387096, Final Lambda Value: 5.2
+Optimal Price for Lambda Multiplier 5: 16.774193548387096
+Optimal Lambda Value for Lambda Multiplier 5: 5.2
+
+Final Results - Best Prices: [15.145631067961165, 16.124031007751938, 16.774193548387096], Best Lambda Values: 
+[3.12, 4.16, 5.2]
+Optimal Price for SKU SET436-KR-NP-XXXL: 15.145631067961165, Elapsed Time: 0.0520 seconds
+
+Total Elapsed Time for find_optimal_price: 1479.3095 seconds
+✓ App completed.
+(relu) servandodavidtorresgarcia@MacBook-Pro-de-Servando train % 

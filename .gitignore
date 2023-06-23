@@ -23,6 +23,7 @@ __pycache__/
 **/*.xlsx
 /*.json
 **/*.xlsx
+**.egg-info/
 
 /*.DS_Store
 
