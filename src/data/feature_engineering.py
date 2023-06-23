@@ -1,6 +1,6 @@
 import pandas as pd
 from typing import List, Iterable
-import holidays
+
 import numpy as np
 from sympy import group
 import logging
@@ -65,10 +65,12 @@ class FeatureEngineeringProcess:
         Returns:
             df: Transformed pd.DataFrame
         """
-
-        df["gmv"] = df["quantity"] * df["price"] #TODO hardcoded variables
+        # Sort values by sku and date
+        df = df.sort_values(by=["SKU", "Date"])
+        df["gmv"] = df["Qty"] * df["price"] #TODO hardcoded variables
         #compute gmv per product for the last N days
-        df["gmv_last_7_days"] = df.groupby("sku")["gmv"].transform(lambda x: x.rolling(window).sum())
+        df[f"gmv_last_{window}_days"] = df.groupby("SKU")["gmv"].transform(lambda x: x.rolling(window).sum())
+
 
         return df
 
@@ -113,6 +115,8 @@ class FeatureEngineeringProcess:
             df[date_feature + "_day"] = df[date_feature].dt.day
         if "day_name" in features:
             df[date_feature + "_day_name"] = df[date_feature].dt.day_name()
+        if "day_of_the_year" in features:
+            df[date_feature + "_day_of_the_year"] = df[date_feature].dt.dayofyear    
         if "week" in features:
             df[date_feature + "_week"] = df[date_feature].dt.isocalendar().week
         if "year" in features:
@@ -127,10 +131,10 @@ class FeatureEngineeringProcess:
             df[date_feature + "_second"] = df[date_feature].dt.second
         if "season" in features:
             df[date_feature + "_season"] = df[date_feature].dt.month.map(seasons)
-        if "holidays" in features:
-            print('updated ___')
-            holiday_dates = holidays.CountryHoliday('PL', years=df[date_feature].dt.year)
-            df[date_feature + "_holidays"] = df[date_feature].dt.date.map(holiday_dates).notna().astype(int)
+        #if "holidays" in features:
+            #print('updated ___')
+            #holiday_dates = holidays.CountryHoliday('PL', years=df[date_feature].dt.year)
+            #df[date_feature + "_holidays"] = df[date_feature].dt.date.map(holiday_dates).notna().astype(int)
 
         return df
     
