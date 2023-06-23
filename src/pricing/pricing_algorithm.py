@@ -5,7 +5,7 @@ import numpy as np
 def demand_curve(price, prices, predicted_sales):
     # This function interpolates the predicted sales for a given price
     interpolated_sales = np.interp(price, prices, predicted_sales)
-    print(f'Interpolated Sales for price {price}: {interpolated_sales}')
+    #print(f'Interpolated Sales for price {price}: {interpolated_sales}')
 
     return interpolated_sales
 
@@ -17,7 +17,7 @@ def profit(gmv0, r_lambda, E_r_lambda, c):
         raise ValueError("r_lambda cannot be None")
     
     calculated_profit = np.sum(gmv0 * E_r_lambda * (r_lambda - c))
-    print(f'Calculated Profit: {calculated_profit}')
+    #print(f'Calculated Profit: {calculated_profit}')
     return calculated_profit
 
 
@@ -28,7 +28,7 @@ def calculate_optimal_price(c, lambda_value, s):
         return None
     else:
         optimal_price = c * (lambda_value * s) / ((lambda_value + 1) * (s - 1))
-        print(f'Optimal Price: {optimal_price}')
+        #print(f'Optimal Price: {optimal_price}')
 
         return optimal_price
     
@@ -40,7 +40,7 @@ def pricing_algorithm(prices, predicted_sales, c, s, initial_lambda=5, delta_lam
     lambda_value = initial_lambda
     iteration = 0
 
-    print(f'Initial Lambda Value: {lambda_value}')
+    #print(f'Initial Lambda Value: {lambda_value}')
 
     # Loop until profit constraint is satisfied or max iterations are reached
     while True:
@@ -58,10 +58,10 @@ def pricing_algorithm(prices, predicted_sales, c, s, initial_lambda=5, delta_lam
         # Step 3: If Profit(λ) < P0, slightly increase λ. If Profit(λ) > P0, slightly decrease λ.
         if current_profit < P0:
             lambda_value += delta_lambda
-            print(f'Current Profit < P0; Increasing Lambda to {lambda_value}')
+            #print(f'Current Profit < P0; Increasing Lambda to {lambda_value}')
         else:
             lambda_value -= delta_lambda
-            print(f'Current Profit >= P0; Decreasing Lambda to {lambda_value}')
+            #print(f'Current Profit >= P0; Decreasing Lambda to {lambda_value}')
 
         # Limit the change in λ in a week to D_lambda percent.
         lambda_value = max(lambda_value, initial_lambda * (1 - D_lambda / 100))
@@ -70,7 +70,7 @@ def pricing_algorithm(prices, predicted_sales, c, s, initial_lambda=5, delta_lam
         # Increment the iteration
         iteration += 1
 
-        print(f'Iteration: {iteration}, Lambda Value: {lambda_value}, Current Profit: {current_profit}')
+        #print(f'Iteration: {iteration}, Lambda Value: {lambda_value}, Current Profit: {current_profit}')
 
         # Check the exit condition
         if current_profit >= P0 or iteration >= max_iterations:
@@ -80,13 +80,13 @@ def pricing_algorithm(prices, predicted_sales, c, s, initial_lambda=5, delta_lam
     print(f'Final Optimal Price: {prices_with_lambda}, Final Lambda Value: {lambda_value}')
     return prices_with_lambda, lambda_value
 
-def grid_search_lambda(P0, prices, predicted_sales, c, s, lambda_min=3, lambda_max=10, lambda_step=1, D_lambda=4):
+def grid_search_lambda(P0, prices, predicted_sales, c, s, lambda_min=3, lambda_max=5, lambda_step=1, D_lambda=4):
     # Iterate over a range of lambda values
     lambda_values = range(lambda_min, lambda_max + 1, lambda_step)
     best_prices = []
     best_lambdas = []
 
-    print(f'Starting grid search with Lambda values: {list(lambda_values)}')
+    #print(f'Starting grid search with Lambda values: {list(lambda_values)}')
 
     # Loop through each lambda value
     for lambda_multiplier in lambda_values:
