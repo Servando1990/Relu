@@ -1,18 +1,38 @@
-
-import gradio as gr
-
-import matplotlib.pyplot as plt
+# load datasets
 import pandas as pd
-import numpy as np
+import gradio as gr
+import pandas as pd
+
 import random
 import plotly.graph_objs as go
 
 
-# load datasets
 predictions = pd.read_csv("../data/processed/predictions.csv")
 optimal_prices = pd.read_csv("../data/processed/optimal_prices.csv")
+amazon = pd.read_csv("../data/raw/Amazon_Sale_Report.csv")
+pl = pd.read_csv("../data/raw/PLMarch2021.csv")
+
+predictions = predictions.merge(amazon[['SKU', 'Category']], on='SKU', how='left')
+
+# rename sku column to match optimal prices
+pl.rename(columns={'Sku': 'SKU'}, inplace=True)
+
+# write and an underscore on whitespace for every column in pl dataframe
+pl.columns = pl.columns.str.replace(' ', '_')
+
+pl.Category.rename({'Kurta': 'kurta', 'Kurta Set':'kurta', 'Gown':'Ethnic Dress', 'Tops':'Set','Nill':'Top' }, inplace=True)
+
+
+competitor_columns = ['Amazon_MRP', 'Flipkart_MRP', 'Ajio_MRP', 'Limeroad_MRP', 'Myntra_MRP', 'Paytm_MRP', 'Snapdeal_MRP']
+from src.data.utils import Utils
+# convert to int the competitor_columns in the pl dataframe
+for col in competitor_columns:
+    pl[col] = pl[col].apply(Utils.convert_to_int)
+
+
     
 unique_skus = sorted(predictions['SKU'].unique())
+unique_category = sorted(pl['Category'].unique())
 
 def plot_demand_curve_gradio(sku):
     # Load the predictions dataframe
@@ -63,6 +83,30 @@ def plot_optimal_prices_gradio(sku):
     # Return the plot as an HTML div
     return gr.update(value=fig, visible=True)
 
+def plot_competitors_prices_gradio(category):
+
+    sku_competitors_results = pl[pl['Category'] == category]
+
+
+    # Calculate average prices for each competitor within the selected category
+    competitor_columns = ['Amazon_MRP', 'Flipkart_MRP', 'Ajio_MRP', 'Limeroad_MRP', 'Myntra_MRP', 'Paytm_MRP', 'Snapdeal_MRP']
+    avg_prices = [sku_competitors_results[col].median() for col in competitor_columns]
+
+    # Create a bar chart of the average competitors prices
+    fig = go.Figure()
+    fig.add_trace(go.Bar(x=competitor_columns, y=avg_prices, name=category))
+
+    # set the plot title and axis labels
+    fig.update_layout(title=f'Competitors Prices for Category {category}', xaxis_title='Competitor', yaxis_title='Median Price', font=dict(size=14))
+    fig.update_xaxes(title_font=dict(size=18), tickfont=dict(size=14))
+    fig.update_yaxes(title_font=dict(size=18), tickfont=dict(size=14))
+
+    # Set the plot background color and grid lines
+    fig.update_layout(plot_bgcolor='white', xaxis=dict(showgrid=True, gridcolor='lightgray'), yaxis=dict(showgrid=True, gridcolor='lightgray'))
+
+    # return the plot as an HTML div
+    return gr.update(value=fig, visible=True)
+
 
 
 
@@ -75,17 +119,17 @@ with gr.Blocks() as demo:
     Enter Values below then click Predict and Pricing Buttons to see results.  
     
     """)
-    with gr.Row():
-        with gr.Column():           
-            sku = gr.Dropdown(
-                label="Select SKU",
-                choices=unique_skus,
-                value=lambda: random.choice(unique_skus),
-            )
-            
+    with gr.Row(equal_height=True):
+      
+        sku = gr.Dropdown(
+            label="Select SKU",
+            choices=unique_skus,
+            value=lambda: random.choice(unique_skus),
+        )
+
+    with gr.Row(equal_height=True):
 
         with gr.Column():
-
             plot = gr.Plot()
             with gr.Row():
                 predict_btn = gr.Button(value="Predict")
@@ -108,7 +152,24 @@ with gr.Blocks() as demo:
                     outputs=plot
 
                 )
+        # return plot_comeptitors_prices_gradio(sku) as a plot for every sku
+    with gr.Row(equal_height=True):
+            category = gr.Dropdown(
+            label="Select Category",
+            choices=unique_category,
+            value=lambda: random.choice(unique_category))
 
 
-demo.launch(share=False)
+            with gr.Column():
+                plot = gr.Plot()
+                with gr.Row():
+                    competitor_btn = gr.Button(value="Competitors Prices")
+                    competitor_btn.click(
+                        plot_competitors_prices_gradio,
+                        inputs=[category],
+                        outputs=plot)
+
+
+
+demo.launch(share=True)
 
