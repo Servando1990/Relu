@@ -1,5 +1,5 @@
 import pandas as pd
-from typing import List, Iterable
+from typing import List, Iterable, Tuple
 
 import numpy as np
 from sympy import group
