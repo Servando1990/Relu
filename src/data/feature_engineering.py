@@ -251,44 +251,44 @@ class FeatureEngineeringProcess:
         self.params['normalize_features'] = {'window_sizes': window_sizes, 'long_period': long_period}
         
         return results
-
+    
     def filter_stability_periods(self, 
-                                 data: pd.DataFrame,
-                                    N: int,
-                                   threshold: float = 0.05, 
-                                   removal_percentage: float = 0.98,
-                                   ) -> pd.DataFrame:
-        
+                             data: pd.DataFrame,
+                             N: int,
+                             threshold: float = 0.05, 
+                             removal_percentage: float = 0.98,
+                             ) -> pd.DataFrame:
+    
         # Sort the data by SKU and date
         data = data.sort_values(by=['SKU', 'Date'])
         
-        # Calculate the 42-day average price
+        # Calculate the N-day average price
         data[f'avg_price_last_{N}_days'] = data.groupby('SKU')['price'].transform(lambda x: x.rolling(window=N).mean())
         
         # Calculate the absolute percentage difference between the current price and the N-day average price
         data['price_variation'] = abs(data['price'] - data[f'avg_price_last_{N}_days']) / data[f'avg_price_last_{N}_days']
 
-        # Mark rows where N-day average cannot be calculated due to insufficient data
-        data['insufficient_data'] = data[f'avg_price_last_{N}_days'].isna() & data['price'].notna() 
+        # Identify rows where the price varied by less than the threshold from the N-day average price
+        stability_periods = (data['price_variation'] < threshold)
 
-        # Handle NaN in 'price_variation' due to insufficient data differently (e.g. set them to a placeholder value)
-        data.loc[data['insufficient_data'], 'price_variation'] = 0 # or some other placeholder value
-        
-        # Identify rows where the price varied by less than the threshold from the 42-day average price
-        stability_periods = (data['price_variation'] < threshold) & ~data['insufficient_data']
-        
         # Randomly select 98% of the stability periods to be removed
         indices_to_remove = data[stability_periods].sample(frac=removal_percentage).index
         
         # Remove the selected indices from the data
         data = data.drop(indices_to_remove)
 
+        # Create a separate DataFrame for rows with insufficient data
+        insufficient_data = data[data[f'avg_price_last_{N}_days'].isna() & data['price'].notna()]
+
         # log and save parameters of the function
         self.logger.info(f"filter_stability_periods: N={N}, threshold={threshold}, removal_percentage={removal_percentage}")
         # save parameters of the function
         self.params['filter_stability_periods'] = {'N': N, 'threshold': threshold, 'removal_percentage': removal_percentage}
+    
+        return data, insufficient_data
+
         
-        return data
+
 
 
 
