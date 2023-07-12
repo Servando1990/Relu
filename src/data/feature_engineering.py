@@ -1,5 +1,5 @@
 import pandas as pd
-from typing import List, Iterable
+from typing import List, Iterable, Tuple
 
 import numpy as np
 from sympy import group
@@ -141,9 +141,8 @@ class FeatureEngineeringProcess:
 
         return data
     def price_sales_correlation_features_updated(self, data: pd.DataFrame, 
-                                     N: int, 
-                                     u_range: Iterable[int], 
-                                     v_range: Iterable[int]) -> pd.DataFrame:
+                                     N: int,
+                                     uv_pairs = List[Tuple[float, float]]) -> pd.DataFrame:
         
         # Sort data by SKU and date
         data = data.sort_values(by=['SKU', 'Date']) #TODO hardcoded variables
@@ -155,30 +154,36 @@ class FeatureEngineeringProcess:
         results = pd.DataFrame()
 
         for sku, group in grouped:
-        # Loop through each combination of u and v
-            for u in u_range:
-                for v in v_range:
-                    # Calculate the numerator part of the formula
-                    numerator = (group['price']**u * group['sales']**v).rolling(window=N).sum()
-                    
-                    # Calculate the sum of price to the power of u over the last N days
-                    sum_price_u = (group['price']**u).rolling(window=N).sum()
-                    
-                    # Calculate the sum of sales to the power of v over the last N days
-                    sum_sales_v = (group['sales']**v).rolling(window=N).sum()
-                    
-                    # Calculate the feature f_corr for this combination of u and v
-                    f_corr = numerator / (sum_price_u * sum_sales_v)
+            for u, v in uv_pairs:
+                # Examples of combinations of pairs:
+                # uv_pairs = [(-5.0, 1.0), (-3.0, 1.0), (-2.0, 1.0), (1.0, 1.0), (-1.0, 0.5), (-1.0, 0.33)
+                    # first pair [-2, 1]
+                        # add more pairs: [-2.2, 1], [-1.8]
+                    # second pair [-3, 1]
+                    #[-2.5,1 ]
+                    #[-1,1/2]
+                    #[1,1]
+                # Calculate the numerator part of the formula
+                numerator = (group['price']**u * group['sales']**v).rolling(window=N).sum()
 
-                    # Add the feature to the group
-                    group[f'f_corr_{u}_{v}'] = f_corr
+                # Calculate the sum of price to the power of u over the last N days
+                sum_price_u = (group['price']**u).rolling(window=N).sum()
+
+                # Calculate the sum of sales to the power of v over the last N days
+                sum_sales_v = (group['sales']**v).rolling(window=N).sum()
+
+                # Calculate the feature f_corr for this combination of u and v
+                f_corr = numerator / (sum_price_u * sum_sales_v)
+
+                # Add the feature to the group
+                group[f'f_corr_{u}_{v}'] = f_corr
 
             # Append the group to the results Dataframe
             results = pd.concat([results, group])
         # log and save parameters of the function
-        self.logger.info(f"price_sales_correlation_features_updated: N={N}, u_range={u_range}, v_range={v_range}")
+        self.logger.info(f"price_sales_correlation_features_updated: N={N}, uv_pairs={uv_pairs}")
         # save parameters of the function
-        self.params['price_sales_correlation_features_updated'] = {'N': N, 'u_range': u_range, 'v_range': v_range}
+        self.params['price_sales_correlation_features_updated'] = {'N': N, 'uv_pairs': uv_pairs}
 
         
         return results
@@ -214,27 +219,27 @@ class FeatureEngineeringProcess:
         for sku, group in grouped:
     
             # Calculate average price and sales for the last N days
-            group['avg_price_last_N_days'] = group['price'].rolling(window=N).mean()
-            group['avg_sales_last_N_days'] = group['sales'].rolling(window=N).mean()
+            group[f'avg_price_last_{N}_days'] = group['price'].rolling(window=N).mean()
+            group[f'avg_sales_last_{N}_days'] = group['sales'].rolling(window=N).mean()
             
             # Calculate reference price and demand
-            price0 = group['price'].rolling(window=long_period).mean().replace(0, np.nan)
+            price0 = group['price'].rolling(window=long_period).mean().replace(0, np.nan) #FIXME careful with nan
             demand0 = group['sales'].rolling(window=long_period).mean().replace(0, np.nan)
 
             # Normalize average price and sales
-            group['normalized_avg_price'] = group['avg_price_last_N_days'] / price0
-            group['normalized_avg_sales'] = group['avg_sales_last_N_days'] / demand0
+            group[f'normalized_avg_price_{N}_days'] = group[f'avg_price_last_{N}_days'] / price0
+            group[f'normalized_avg_sales_{N}_days'] = group[f'avg_sales_last_{N}_days'] / demand0
             
             # Apply log transformation
-            group['normalized_log_avg_price'] = np.log(group['avg_price_last_N_days'] / price0).clip(lower=1e-9)
-            group['normalized_log_avg_sales'] = np.log(group['avg_sales_last_N_days'] / demand0).clip(lower=1e-9)
+            group[f'normalized_log_avg_price_{N}_days'] = np.log(group[f'avg_price_last_{N}_days'] / price0).clip(lower=1e-9) #FIXME See if clip is necessary
+            group[f'normalized_log_avg_sales_{N}_days'] = np.log(group[f'avg_sales_last_{N}_days'] / demand0).clip(lower=1e-9)
 
             # Normalize standard deviation
-            group['normalized_std_price'] = group['price'].rolling(window=N).std() / group['avg_price_last_N_days']
-            group['normalized_std_sales'] = group['sales'].rolling(window=N).std() / group['avg_sales_last_N_days']
+            group[f'normalized_std_price_{N}_days'] = group['price'].rolling(window=N).std() / group[f'avg_price_last_{N}_days']
+            group[f'normalized_std_sales_{N}_days'] = group['sales'].rolling(window=N).std() / group[f'avg_sales_last_{N}_days']
 
             # Drop 'avg_price_last_N_days' and 'avg_sales_last_N_days' columns
-            group = group.drop(columns=['avg_price_last_N_days', 'avg_sales_last_N_days'])
+            group = group.drop(columns=[f'avg_price_last_{N}_days', f'avg_sales_last_{N}_days'])
 
             # Append the group to the results Dataframe
             results = pd.concat([results, group])
