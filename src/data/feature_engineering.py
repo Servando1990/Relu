@@ -157,8 +157,8 @@ class FeatureEngineeringProcess:
             for u, v in uv_pairs:
                 # Examples of combinations of pairs:
                 # uv_pairs = [(-5.0, 1.0), (-3.0, 1.0), (-2.0, 1.0), (1.0, 1.0), (-1.0, 0.5), (-1.0, 0.33)
-                    # first pair [-2, 1]
-                        # add more pairs: [-2.2, 1], [-1.8]
+                    # first pair [-2, 1] (example if this is the tio variant after feature importance)
+                        # add more pairs: [-2.2, 1], [-1.8] aroun the top variant
                     # second pair [-3, 1]
                     #[-2.5,1 ]
                     #[-1,1/2]
@@ -191,13 +191,14 @@ class FeatureEngineeringProcess:
     def normalize_features(
             self, 
             data: pd.DataFrame, 
-            N: int, 
+            window_sizes: List[int], 
             long_period: int ) -> pd.DataFrame:
         # Generate docstring
         """ Normalize features for pricing model.  
         Args:
             data (pd.DataFrame): DataFrame
             N (int): represents the number of days for a short-term average. 
+             Ideal: Several features with different window sizes. 
                 This is the window of time over which you calculate the average price and sales. 
                 For example, if you set N to 7, you calculate the average price and sales over the last 7 days.
             long_period (int): represents the number of days over a longer-term average. 
@@ -217,36 +218,37 @@ class FeatureEngineeringProcess:
         results = pd.DataFrame()
 
         for sku, group in grouped:
-    
-            # Calculate average price and sales for the last N days
-            group[f'avg_price_last_{N}_days'] = group['price'].rolling(window=N).mean()
-            group[f'avg_sales_last_{N}_days'] = group['sales'].rolling(window=N).mean()
-            
-            # Calculate reference price and demand
-            price0 = group['price'].rolling(window=long_period).mean().replace(0, np.nan) #FIXME careful with nan
-            demand0 = group['sales'].rolling(window=long_period).mean().replace(0, np.nan)
+            for N in window_sizes:
+   
+                # Calculate average price and sales for the last N days
+                group[f'avg_price_last_{N}_days'] = group['price'].rolling(window=N).mean()
+                group[f'avg_sales_last_{N}_days'] = group['sales'].rolling(window=N).mean()
+                
+                # Calculate reference price and demand
+                price0 = group['price'].rolling(window=long_period).mean().replace(0, np.nan) #FIXME careful with nan zeros and nans are bad
+                demand0 = group['sales'].rolling(window=long_period).mean().replace(0, np.nan)
 
-            # Normalize average price and sales
-            group[f'normalized_avg_price_{N}_days'] = group[f'avg_price_last_{N}_days'] / price0
-            group[f'normalized_avg_sales_{N}_days'] = group[f'avg_sales_last_{N}_days'] / demand0
-            
-            # Apply log transformation
-            group[f'normalized_log_avg_price_{N}_days'] = np.log(group[f'avg_price_last_{N}_days'] / price0).clip(lower=1e-9) #FIXME See if clip is necessary
-            group[f'normalized_log_avg_sales_{N}_days'] = np.log(group[f'avg_sales_last_{N}_days'] / demand0).clip(lower=1e-9)
+                # Normalize average price and sales
+                group[f'normalized_avg_price_{N}_days'] = group[f'avg_price_last_{N}_days'] / price0
+                group[f'normalized_avg_sales_{N}_days'] = group[f'avg_sales_last_{N}_days'] / demand0
+                
+                # Apply log transformation
+                group[f'normalized_log_avg_price_{N}_days'] = np.log(group[f'avg_price_last_{N}_days'] / price0)
+                group[f'normalized_log_avg_sales_{N}_days'] = np.log(group[f'avg_sales_last_{N}_days'] / demand0)
 
-            # Normalize standard deviation
-            group[f'normalized_std_price_{N}_days'] = group['price'].rolling(window=N).std() / group[f'avg_price_last_{N}_days']
-            group[f'normalized_std_sales_{N}_days'] = group['sales'].rolling(window=N).std() / group[f'avg_sales_last_{N}_days']
+                # Normalize standard deviation
+                group[f'normalized_std_price_{N}_days'] = group['price'].rolling(window=N).std() / group[f'avg_price_last_{N}_days']
+                group[f'normalized_std_sales_{N}_days'] = group['sales'].rolling(window=N).std() / group[f'avg_sales_last_{N}_days']
 
-            # Drop 'avg_price_last_N_days' and 'avg_sales_last_N_days' columns
-            group = group.drop(columns=[f'avg_price_last_{N}_days', f'avg_sales_last_{N}_days'])
+                # Drop 'avg_price_last_N_days' and 'avg_sales_last_N_days' columns
+                group = group.drop(columns=[f'avg_price_last_{N}_days', f'avg_sales_last_{N}_days'])
 
             # Append the group to the results Dataframe
             results = pd.concat([results, group])
         # log and save parameters of the function
-        self.logger.info(f"normalize_features: N={N}, long_period={long_period}")
+        self.logger.info(f"normalize_features: window_sizes={window_sizes}, long_period={long_period}")
         # save parameters of the function
-        self.params['normalize_features'] = {'N': N, 'long_period': long_period}
+        self.params['normalize_features'] = {'window_sizes': window_sizes, 'long_period': long_period}
         
         return results
 
