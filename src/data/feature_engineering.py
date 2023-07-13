@@ -156,7 +156,7 @@ class FeatureEngineeringProcess:
         for sku, group in grouped:
             for u, v in uv_pairs:
                 # Examples of combinations of pairs:
-                # uv_pairs = [(-5.0, 1.0), (-3.0, 1.0), (-2.0, 1.0), (1.0, 1.0), (-1.0, 0.5), (-1.0, 0.33)
+                #  uv_pairs =[(-5.0, 1.0), (-3.0, 1.0), (-2.0, 1.0), (1.0, 1.0), (-1.0, 0.5), (-1.0, 0.33)]
                     # first pair [-2, 1] (example if this is the tio variant after feature importance)
                         # add more pairs: [-2.2, 1], [-1.8] aroun the top variant
                     # second pair [-3, 1]
