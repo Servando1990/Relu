@@ -7,10 +7,10 @@ import random
 import plotly.graph_objs as go
 
 
-predictions = pd.read_csv("../data/processed/predictions.csv")
-optimal_prices = pd.read_csv("../data/processed/optimal_prices.csv")
-amazon = pd.read_csv("../data/raw/Amazon_Sale_Report.csv")
-pl = pd.read_csv("../data/raw/PLMarch2021.csv")
+predictions = pd.read_csv("/data/processed/predictions.csv")
+optimal_prices = pd.read_csv("/data/processed/optimal_prices.csv")
+amazon = pd.read_csv("/data/raw/Amazon_Sale_Report.csv")
+pl = pd.read_csv("/data/raw/PLMarch2021.csv")
 
 predictions = predictions.merge(amazon[['SKU', 'Category']], on='SKU', how='left')
 
