@@ -1,3 +1,11 @@
+
+---
+title: Relu
+app_file: app.py
+sdk: gradio
+sdk_version: 3.35.2
+---
+
 # Relu Pricing Model
 
 ## Description
@@ -90,3 +98,4 @@ Run the following command to deploy the dashboard.
 python src/app.py
 ```
 You will need to create and account with Hugging Face spaces and request access to Relu Organization to the owner.
+
