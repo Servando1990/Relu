@@ -1,5 +1,5 @@
 import pandas as pd
-from typing import List, Iterable
+from typing import List, Iterable, Tuple
 
 import numpy as np
 from sympy import group
@@ -139,11 +139,22 @@ class FeatureEngineeringProcess:
         return df
     
 
-        return data
     def price_sales_correlation_features_updated(self, data: pd.DataFrame, 
                                      N: int, 
                                      u_range: Iterable[int], 
                                      v_range: Iterable[int]) -> pd.DataFrame:
+        
+        """Compute the price-sales correlation features for a given range of u and v values
+
+        Args:
+            data (pd.DataFrame): DataFrame to be transformed
+            N (int): Lookback period in days
+            u_range (Iterable[int]): Range of values for u in correlation calculation
+            v_range (Iterable[int]): Range of values for v in correlation calculation
+
+        Returns:
+            pd.DataFrame: Transformed DataFrame
+        """
         
         # Sort data by SKU and date
         data = data.sort_values(by=['SKU', 'Date']) #TODO hardcoded variables
