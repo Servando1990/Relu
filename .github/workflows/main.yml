@@ -16,5 +16,5 @@ jobs:
           lfs: true
       - name: Push to hub
         env:
-          HF_TOKEN: ${{ secrets.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 }}
-        run: git push https://ServandoTorres:$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@huggingface.co/spaces/ServandoTorres/Relu main
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: git push https://ServandoTorres:$HF_TOKEN@huggingface.co/spaces/ServandoTorres/Relu main
