@@ -2,16 +2,17 @@
 import pandas as pd
 import gradio as gr
 import pandas as pd
-
-
+import time
+import threading
 import random
 import plotly.graph_objs as go
+from pyngrok import ngrok, conf
 
 
-predictions = pd.read_csv("/data/processed/predictions.csv")
-optimal_prices = pd.read_csv("/data/processed/optimal_prices.csv")
-amazon = pd.read_csv("/data/raw/Amazon_Sale_Report.csv")
-pl = pd.read_csv("/data/raw/PLMarch2021.csv")
+predictions = pd.read_csv("data/processed/predictions.csv")
+optimal_prices = pd.read_csv("data/processed/optimal_prices.csv")
+amazon = pd.read_csv("data/raw/Amazon_Sale_Report.csv")
+pl = pd.read_csv("data/raw/PLMarch2021.csv")
 
 predictions = predictions.merge(amazon[['SKU', 'Category']], on='SKU', how='left')
 
@@ -170,7 +171,30 @@ with gr.Blocks() as demo:
                         inputs=[category],
                         outputs=plot)
 
+def launch_ngrok():
+    # Get the actual port number where Gradio is running
+    time.sleep(10)  # wait for a few seconds for the server to start
+    url = iface.url
+    port = url.split(":")[-1]
 
+    try:
+        # Open a Ngrok tunnel to the localhost where Gradio is running
+        tunnels = ngrok.connect(addr=port, options={"bind_tls": True})
+        public_url = tunnels[0].public_url
 
-demo.launch(share=False)
+        print("Public URL:", public_url)
+    except Exception as e:
+        print("An error occurred while connecting to ngrok:", str(e))
+
+# Start Gradio with share=False (it will start at a random available port)
+iface = demo.launch(share=False)
+
+# Use a separate thread to launch ngrok so that we can wait for the Gradio interface to fully launch
+ngrok_thread = threading.Thread(target=launch_ngrok)
+ngrok_thread.start()
+
+# Keep the script running
+input("Press Enter to close...")
+ngrok.kill()
+
 
