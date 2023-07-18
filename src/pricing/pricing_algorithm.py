@@ -1,110 +1,141 @@
 import numpy as np
+from typing import List
 
+def demand_curve(price: np.array, prices: np.array, predicted_sales: np.array) -> np.array:
+    return np.interp(price, prices, predicted_sales)
 
-# Define demand curve function
-def demand_curve(price, prices, predicted_sales):
-    # This function interpolates the predicted sales for a given price
-    interpolated_sales = np.interp(price, prices, predicted_sales)
-    #print(f'Interpolated Sales for price {price}: {interpolated_sales}')
-
-    return interpolated_sales
-
-
-# Define profit function
-def profit(gmv0, r_lambda, E_r_lambda, c):
-    # This function calculates the profit as described in the article
+def total_profit(GMV: np.array, r_lambda: np.array, E_r_lambda: np.array, c: np.array) -> np.array:
     if r_lambda is None:
         raise ValueError("r_lambda cannot be None")
-    
-    calculated_profit = np.sum(gmv0 * E_r_lambda * (r_lambda - c))
-    #print(f'Calculated Profit: {calculated_profit}')
-    return calculated_profit
+    return GMV * E_r_lambda * (r_lambda - c)
 
-
-# Define optimal price formula
-def calculate_optimal_price(c, lambda_value, s):
-    # This function calculates the optimal price using the formula given in the article
+def calculate_optimal_price(c: np.array, lambda_value: np.array, s: np.array) -> np.array:
     if (lambda_value + 1) * (s - 1) == 0:
         return None
     else:
-        optimal_price = c * (lambda_value * s) / ((lambda_value + 1) * (s - 1))
-        #print(f'Optimal Price: {optimal_price}')
+        return c * (lambda_value * s) / ((lambda_value + 1) * (s - 1))
 
-        return optimal_price
-    
+def calculate_GMV(prices: np.array, predicted_sales: np.array) -> np.array:
+    return np.sum(prices * predicted_sales)
 
+def binary_search(prices: np.array, predicted_sales: np.array, c: np.array, s: np.array, P0=0, left_lambda=3, right_lambda=5, D_lambda=4, max_iterations=1000) -> List[np.array]:
+    for iteration in range(max_iterations):
+        lambda_value = (right_lambda + left_lambda) / 2
 
-# Pricing algorithm function
-def pricing_algorithm(prices, predicted_sales, c, s, initial_lambda=5, delta_lambda=0.1, P0=0, max_iterations=1000, D_lambda=4):
-    # Step 0: Select initial λ = 5.
-    lambda_value = initial_lambda
-    iteration = 0
-
-    #print(f'Initial Lambda Value: {lambda_value}')
-
-    # Loop until profit constraint is satisfied or max iterations are reached
-    while True:
-        # Step 2: For current λ calculate prices, and find out what Profit(λ) is.
-        # Calculate prices with lambda
         prices_with_lambda = calculate_optimal_price(c, lambda_value, s)
 
-        # Use demand_curve function to calculate E_r_lambda
         E_r_lambda = demand_curve(prices_with_lambda, prices, predicted_sales)
-        gmv0 = demand_curve(prices, prices, predicted_sales)
+        GMV = calculate_GMV(prices, predicted_sales)
 
-        # Calculate the Profit(λ)
-        current_profit = profit(gmv0, prices_with_lambda, E_r_lambda, c)
+        current_profit = total_profit(GMV, prices_with_lambda, E_r_lambda, c)
 
-        # Step 3: If Profit(λ) < P0, slightly increase λ. If Profit(λ) > P0, slightly decrease λ.
-        if current_profit < P0:
-            lambda_value += delta_lambda
-            #print(f'Current Profit < P0; Increasing Lambda to {lambda_value}')
+        if abs(np.sum(current_profit) - P0) < 1e-9:  # tolerance level
+            return prices_with_lambda, lambda_value
+
+        if np.sum(current_profit) < P0:
+            left_lambda = lambda_value
         else:
-            lambda_value -= delta_lambda
-            #print(f'Current Profit >= P0; Decreasing Lambda to {lambda_value}')
+            right_lambda = lambda_value
 
-        # Limit the change in λ in a week to D_lambda percent.
-        lambda_value = max(lambda_value, initial_lambda * (1 - D_lambda / 100))
-        lambda_value = min(lambda_value, initial_lambda * (1 + D_lambda / 100))
-
-        # Increment the iteration
-        iteration += 1
-
-        #print(f'Iteration: {iteration}, Lambda Value: {lambda_value}, Current Profit: {current_profit}')
-
-        # Check the exit condition
-        if current_profit >= P0 or iteration >= max_iterations:
-            break
-
-    # Result of pricing algorithm
-    print(f'Final Optimal Price: {prices_with_lambda}, Final Lambda Value: {lambda_value}')
     return prices_with_lambda, lambda_value
 
-def grid_search_lambda(P0, prices, predicted_sales, c, s, lambda_min=3, lambda_max=5, lambda_step=1, D_lambda=4):
-    # Iterate over a range of lambda values
-    lambda_values = range(lambda_min, lambda_max + 1, lambda_step)
-    best_prices = []
-    best_lambdas = []
+def grid_search_lambda(P0: float, prices: np.array, predicted_sales: np.array, c: np.array, s: np.array, lambda_min=3, lambda_max=5, lambda_step=0.1, D_lambda=4) -> List[np.array]:
+    # Determine initial bounds
+    lambda_values = np.arange(lambda_min, lambda_max + lambda_step, lambda_step)
+    best_lambda = None
+    best_profit = float('-inf')
 
-    #print(f'Starting grid search with Lambda values: {list(lambda_values)}')
+    # Iterate over possible lambda values
+    for lambda_value in lambda_values:
+        # Calculate optimal price using binary search
+        optimal_price, optimal_lambda = binary_search(prices, predicted_sales, c, s, P0=P0, left_lambda=lambda_value, right_lambda=lambda_value+lambda_step, D_lambda=D_lambda)
+        GMV = calculate_GMV(prices, predicted_sales)
+        E_r_lambda = demand_curve(optimal_price, prices, predicted_sales)
+        current_profit = total_profit(GMV, optimal_price, E_r_lambda, c)
 
-    # Loop through each lambda value
-    for lambda_multiplier in lambda_values:
+        # Update best lambda value if this is the maximum profit so far
+        if np.sum(current_profit) > best_profit:
+            best_profit = np.sum(current_profit)
+            best_lambda = optimal_lambda
 
-        print(f'\nProcessing Lambda Multiplier: {lambda_multiplier}')
-        # Call pricing_algorithm function to calculate optimal price and lambda for the current lambda_multiplier
-        optimal_price, optimal_lambda = pricing_algorithm(prices, predicted_sales, c, s, initial_lambda=lambda_multiplier, P0=P0, D_lambda=D_lambda)
+    # Return optimal price with best lambda
+    optimal_price = calculate_optimal_price(c, best_lambda, s)
 
-        print(f'Optimal Price for Lambda Multiplier {lambda_multiplier}: {optimal_price}')
-        print(f'Optimal Lambda Value for Lambda Multiplier {lambda_multiplier}: {optimal_lambda}')
+    return optimal_price, best_lambda
 
-        # Store the optimal price and lambda
-        best_prices.append(optimal_price)
-        best_lambdas.append(optimal_lambda)
+# Artem approach: --------------------------------------------------------------------------------
 
-    # Return the best prices and corresponding lambda values
-    print(f'\nFinal Results - Best Prices: {best_prices}, Best Lambda Values: {best_lambdas}')
-    return best_prices, best_lambdas
+def total_profit(prices, demands, costs):
+    return np.sum( (prices - costs) * demands )
+
+def demand_price_and_demand(
+    lambda_value: float, 
+    prices_base: np.array, #  dim (skus_count, 5)
+    pr_demands_base: np.array #  dim (skus_count, 5)
+):
+    # ....
+    prices_opt = prices_base[:, 2]
+    # repeat vector prices_opt 5 times: np.array([prices_opt * 0.85, prices_opt * 0.9, ...])
+    price_versions = prices_opt[:, None] //...// np.array([0.85, 0.9, 1.0, 1.1, 1.2])
+    # TODO: choose one best version prices_opt for each sku 
+    # demand_versions = interpolate(prices_base, pr_demands_base, price_opt)  # dim (skus_count, 5)
+    # L = L(demand_versions, prices_versions, costs)
+    # indexes = arg_max(L, dim=-1)
+    # price_opt = price_versions[ indexes ]
+    price_versions = prices_opt[:, None] //...// np.array([0.85, 0.9, 1.0, 1.1, 1.2])
+    
+    # TODO: choose one best version prices_opt for each sku 
+    # price_opt
+    price_versions = prices_opt[:, None] //...// np.array([0.95, 0.98, 1.0, 1.02, 1.05])
+    # TODO: choose one best version prices_opt for each sku 
+    # price_opt
+    # demand_opt = interpolate(prices_base, pr_demands_base, price_opt)
+
+    # Second approach ----------------------
+    prices_opt
+    for (sku_prices_base, sku_pr_demands_base, sku_cost) in zip(prices_base, pr_demands_base, costs):
+        l_max = -1000000000.0
+        sku_price_opt = sku_prices_base[2]
+        sku_demand_opt = 0
+        sku_prices = np.array([0.85, 0.9, 0.95, 0.98, 1.0, 1.02, 1.05, 1.10, 1.15, 1.20]) * sku_prices_base[2]
+        for sku_price in sku_prices:
+            sku_demand = np.interp(sku_prices_base, sku_pr_demands_base, )
+            l = L(sku_price, sku_demand, sku_cost, lambda_value)
+            if l > l_max:
+                l_max = l 
+                sku_price_opt = sku_price
+                sku_demand_opt = sku_demand
+        prices_opt.append(sku_price_opt)
+        demands_opt.append(sku_demand_opt)
+
+    return demands_opt, prices_opt
+
+
+def L(price, demand, cost, lambda_value):
+    return demand * (price + lambda_value * (price - cost))
+
+def binary_search(
+    prices_base: np.array, 
+    predicted_sales_base: np.array,
+    costs: np.array, 
+    left_lambda=3, 
+    right_lambda=5, 
+    D_lambda=4, 
+    max_iterations=1000,
+    lambda_accuracy = 0.2
+) -> List[np.array]:
+    while right_lambda - left_lambda > lambda_accuracy:
+        lambda_value = (right_lambda + left_lambda) / 2.0
+        prices, demands = demand_price_and_demand(lambda_value, prices_base, predicted_sales_base)
+
+        current_profit = total_profit(prices, demands, costs)
+
+        if current_profit < P0:
+            left_lambda = lambda_value
+        else:
+            right_lambda = lambda_value
+
+    return prices, lambda_value
 
 
 
