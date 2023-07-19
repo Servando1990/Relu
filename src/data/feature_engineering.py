@@ -148,8 +148,8 @@ class FeatureEngineeringProcess:
         Args:
             data (pd.DataFrame): DataFrame to be transformed
             N (int): Lookback period in days
-            u_range (Iterable[int]): Range of values for u in correlation calculation
-            v_range (Iterable[int]): Range of values for v in correlation calculation
+            uv_pairs (List[Tuple[float, float]]): List of tuples with u and v values
+
 
         Returns:
             pd.DataFrame: Transformed DataFrame
@@ -209,9 +209,7 @@ class FeatureEngineeringProcess:
         Args:
             data (pd.DataFrame): DataFrame
             N (int): represents the number of days for a short-term average. 
-             Ideal: Several features with different window sizes. 
-                This is the window of time over which you calculate the average price and sales. 
-                For example, if you set N to 7, you calculate the average price and sales over the last 7 days.
+            window_sizes (List[int]): List of window sizes to be used for the short-term average.
             long_period (int): represents the number of days over a longer-term average. 
                 This is used to calculate the reference price (price0) and reference demand (demand0) which are used to normalize the short-term average.
                 For example, if long_period is set to 28, it means that you calculate the average price and average demand over the last 28 days to use as the reference values for normalization.
@@ -236,8 +234,33 @@ class FeatureEngineeringProcess:
                 group[f'avg_sales_last_{N}_days'] = group['sales'].rolling(window=N).mean()
                 
                 # Calculate reference price and demand
-                price0 = group['price'].rolling(window=long_period).mean().replace(0, np.nan) #FIXME careful with nan zeros and nans are bad
-                demand0 = group['sales'].rolling(window=long_period).mean().replace(0, np.nan)
+                price0 = group['price'].rolling(window=long_period).mean()
+                demand0 = group['sales'].rolling(window=long_period).mean()
+
+                # Use ffill  the NaNs with the last valid observation
+                price0 = price0.fillna(method='ffill')
+                demand0 = demand0.fillna(method='ffill')
+
+                # Print the values of price0 and demand0 before replacing zeros with NaNs
+                #print(f'price0 before replace: {price0}')
+                #print(f'demand0 before replace: {demand0}')
+
+                # Replace zeros with NaNs after forward filling
+                price0 = price0.replace(to_replace=0, value=np.nan)
+                demand0 = demand0.replace(to_replace=0, value=np.nan)
+
+
+                # Print the values of price0 and demand0 after replacing zeros with NaNs
+                #print(f'price0 after replace: {price0}')
+                #print(f'demand0 after replace: {demand0}')
+
+                price0.fillna(method='bfill', inplace=True)
+                demand0.fillna(method='bfill', inplace=True)
+
+                # add price0 and demand0 to the group
+                group['price0'] = price0
+                group['demand0'] = demand0
+
 
                 # Normalize average price and sales
                 group[f'normalized_avg_price_{N}_days'] = group[f'avg_price_last_{N}_days'] / price0
@@ -252,7 +275,7 @@ class FeatureEngineeringProcess:
                 group[f'normalized_std_sales_{N}_days'] = group['sales'].rolling(window=N).std() / group[f'avg_sales_last_{N}_days']
 
                 # Drop 'avg_price_last_N_days' and 'avg_sales_last_N_days' columns
-                group = group.drop(columns=[f'avg_price_last_{N}_days', f'avg_sales_last_{N}_days'])
+                #group = group.drop(columns=[f'avg_price_last_{N}_days', f'avg_sales_last_{N}_days'])
 
             # Append the group to the results Dataframe
             results = pd.concat([results, group])
