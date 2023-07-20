@@ -223,45 +223,33 @@ class FeatureEngineeringProcess:
 
         grouped = data.groupby('SKU')
 
-        # Placeholder DataFrame for the results
-        results = pd.DataFrame()
+        # Placeholder list for the results
+        results = []
 
-        for sku, group in grouped:
+        for sku, group in grouped:               
+            
+            # Calculate reference price and demand
+            price0 = group['price'].rolling(window=long_period).mean()
+            demand0 = group['sales'].rolling(window=long_period).mean()
+
+            # Use ffill  the NaNs with the last valid observation
+            price0 = price0.fillna(method='ffill')
+            demand0 = demand0.fillna(method='ffill')
+
+            # Replace zeros with NaNs after forward filling
+            price0 = price0.replace(to_replace=0, value=np.nan)
+            demand0 = demand0.replace(to_replace=0, value=np.nan)
+
+            price0.fillna(method='bfill', inplace=True)
+            demand0.fillna(method='bfill', inplace=True)
+
+            # Loop through the window sizes
             for N in window_sizes:
-   
+
                 # Calculate average price and sales for the last N days
                 group[f'avg_price_last_{N}_days'] = group['price'].rolling(window=N).mean()
                 group[f'avg_sales_last_{N}_days'] = group['sales'].rolling(window=N).mean()
-                
-                # Calculate reference price and demand
-                price0 = group['price'].rolling(window=long_period).mean()
-                demand0 = group['sales'].rolling(window=long_period).mean()
-
-                # Use ffill  the NaNs with the last valid observation
-                price0 = price0.fillna(method='ffill')
-                demand0 = demand0.fillna(method='ffill')
-
-                # Print the values of price0 and demand0 before replacing zeros with NaNs
-                #print(f'price0 before replace: {price0}')
-                #print(f'demand0 before replace: {demand0}')
-
-                # Replace zeros with NaNs after forward filling
-                price0 = price0.replace(to_replace=0, value=np.nan)
-                demand0 = demand0.replace(to_replace=0, value=np.nan)
-
-
-                # Print the values of price0 and demand0 after replacing zeros with NaNs
-                #print(f'price0 after replace: {price0}')
-                #print(f'demand0 after replace: {demand0}')
-
-                price0.fillna(method='bfill', inplace=True)
-                demand0.fillna(method='bfill', inplace=True)
-
-                # add price0 and demand0 to the group
-                group['price0'] = price0
-                group['demand0'] = demand0
-
-
+    
                 # Normalize average price and sales
                 group[f'normalized_avg_price_{N}_days'] = group[f'avg_price_last_{N}_days'] / price0
                 group[f'normalized_avg_sales_{N}_days'] = group[f'avg_sales_last_{N}_days'] / demand0
@@ -274,11 +262,13 @@ class FeatureEngineeringProcess:
                 group[f'normalized_std_price_{N}_days'] = group['price'].rolling(window=N).std() / group[f'avg_price_last_{N}_days']
                 group[f'normalized_std_sales_{N}_days'] = group['sales'].rolling(window=N).std() / group[f'avg_sales_last_{N}_days']
 
-                # Drop 'avg_price_last_N_days' and 'avg_sales_last_N_days' columns
-                #group = group.drop(columns=[f'avg_price_last_{N}_days', f'avg_sales_last_{N}_days'])
+                #  Drop 'avg_price_last_N_days' and 'avg_sales_last_N_days' columns
+                group = group.drop(columns=[f'avg_price_last_{N}_days', f'avg_sales_last_{N}_days'])
 
-            # Append the group to the results Dataframe
-            results = pd.concat([results, group])
+            results.append(group)
+
+        # Append the group to the results Dataframe
+        results = pd.concat(results)
         # log and save parameters of the function
         self.logger.info(f"normalize_features: window_sizes={window_sizes}, long_period={long_period}")
         # save parameters of the function
