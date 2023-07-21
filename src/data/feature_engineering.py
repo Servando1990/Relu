@@ -302,6 +302,10 @@ class FeatureEngineeringProcess:
         data = data.drop(indices_to_remove)
 
         # Create a separate DataFrame for rows with insufficient data
+        # By default this df is going to capture the first N days of the window
+        # Example: N=7 until the 7th day avg_price_last_n_day is going to be empty
+        # TODO Should I consider this case and not remove it?
+        # TODO See old versions
         insufficient_data = data[data[f'avg_price_last_{N}_days'].isna() & data['price'].notna()]
 
         # log and save parameters of the function
