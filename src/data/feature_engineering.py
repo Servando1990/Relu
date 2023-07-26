@@ -47,7 +47,7 @@ class FeatureEngineeringProcess:
         Returns:
             df: Transformed pd.DataFrame
         """
-        #TODO: add more numerical transformations
+
         for feature in features:
             for group_feature in group_features:
                 df[f"{group_feature}_{feature}_mean"] = df.groupby(group_feature)[feature].transform("mean")
@@ -67,7 +67,7 @@ class FeatureEngineeringProcess:
         """
         # Sort values by sku and date
         df = df.sort_values(by=["SKU", "Date"])
-        df["gmv"] = df["Qty"] * df["price"] #TODO hardcoded variables
+        df["gmv"] = df["Qty"] * df["price"] 
         #compute gmv per product for the last N days
         df[f"gmv_last_{window}_days"] = df.groupby("SKU")["gmv"].transform(lambda x: x.rolling(window).sum())
 
@@ -156,7 +156,7 @@ class FeatureEngineeringProcess:
         """
         
         # Sort data by SKU and date
-        data = data.sort_values(by=['SKU', 'Date']) #TODO hardcoded variables
+        data = data.sort_values(by=['SKU', 'Date']) 
 
         # Group the data by SKU
         grouped = data.groupby('SKU')
@@ -251,8 +251,8 @@ class FeatureEngineeringProcess:
                 group[f'avg_sales_last_{N}_days'] = group['sales'].rolling(window=N).mean()
     
                 # Normalize average price and sales
-                group[f'normalized_avg_price_{N}_days'] = group[f'avg_price_last_{N}_days'] / price0
-                group[f'normalized_avg_sales_{N}_days'] = group[f'avg_sales_last_{N}_days'] / demand0
+                #group[f'normalized_avg_price_{N}_days'] = group[f'avg_price_last_{N}_days'] / price0
+                #group[f'normalized_avg_sales_{N}_days'] = group[f'avg_sales_last_{N}_days'] / demand0
                 
                 # Apply log transformation
                 group[f'normalized_log_avg_price_{N}_days'] = np.log(group[f'avg_price_last_{N}_days'] / price0)
@@ -304,9 +304,11 @@ class FeatureEngineeringProcess:
         # Create a separate DataFrame for rows with insufficient data
         # By default this df is going to capture the first N days of the window
         # Example: N=7 until the 7th day avg_price_last_n_day is going to be empty
-        # TODO Should I consider this case and not remove it?
-        # TODO See old versions
+        # TODO See if insufficient data has other cases than the first N days
         insufficient_data = data[data[f'avg_price_last_{N}_days'].isna() & data['price'].notna()]
+
+        # Drop "avg_price_last_N_days" and "price_variation" columns
+        data = data.drop(columns=[f'avg_price_last_{N}_days', 'price_variation'])
 
         # log and save parameters of the function
         self.logger.info(f"filter_stability_periods: N={N}, threshold={threshold}, removal_percentage={removal_percentage}")
