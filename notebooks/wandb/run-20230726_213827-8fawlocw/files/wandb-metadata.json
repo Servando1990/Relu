@@ -1,0 +1,41 @@
+{
+    "os": "macOS-10.16-x86_64-i386-64bit",
+    "python": "3.8.16",
+    "heartbeatAt": "2023-07-26T18:38:36.131125",
+    "startedAt": "2023-07-26T18:38:27.280377",
+    "docker": null,
+    "cuda": null,
+    "args": null,
+    "state": "running",
+    "program": "<python with no main file>",
+    "git": {
+        "remote": "https://github.com/Servando1990/Relu.git",
+        "commit": "322ddaf2ed21fabdf1c1ae0b79822a0b06f06d91"
+    },
+    "email": "vandotorresg@gmail.com",
+    "root": "/Users/servandodavidtorresgarcia/Servando/Relu/Relu",
+    "host": "MacBook-Pro-de-Servando.local",
+    "username": "servandodavidtorresgarcia",
+    "executable": "/Users/servandodavidtorresgarcia/miniconda3/envs/relu/bin/python",
+    "cpu_count": 2,
+    "cpu_count_logical": 4,
+    "cpu_freq": {
+        "current": 2300,
+        "min": 2300,
+        "max": 2300
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2300,
+            "min": 2300,
+            "max": 2300
+        }
+    ],
+    "disk": {
+        "total": 233.46913528442383,
+        "used": 205.39334106445312
+    },
+    "memory": {
+        "total": 8.0
+    }
+}
