@@ -42,6 +42,20 @@ class DataSplitter:
         val_data = self.data[(self.data[self.date_column] > train_val_threshold) & (self.data[self.date_column] <= val_test_threshold)]
         test_data = self.data[self.data[self.date_column] > val_test_threshold]
 
+        # Get the set of SKUs that are present in both the train_data, val_data and test_data
+        train_val_test_skus = set(train_data['SKU']).intersection(set(val_data['SKU'])).intersection(set(test_data['SKU']))
+
+        # Filter the train, val and test data to only include the SKUs that are present in all three sets
+        train_data = train_data[train_data['SKU'].isin(train_val_test_skus)]
+        val_data = val_data[val_data['SKU'].isin(train_val_test_skus)]
+        test_data = test_data[test_data['SKU'].isin(train_val_test_skus)]
+
+        # Add a warning message if there are no common SKUs or how many SKUs were removed
+        if len(train_val_test_skus) == 0:
+            raise ValueError("No common SKUs in the train, validation and test sets. Try increasing the train months or decreasing the validation months or test weeks.")
+        elif len(train_val_test_skus) < len(self.data['SKU'].unique()):
+            print(f"Warning: {len(self.data['SKU'].unique()) - len(train_val_test_skus)} SKUs were removed from the train, validation and test sets because they were not present in all three sets.")
+
         # Return the training, validation, testing datasets
         X_train, y_train = train_data.drop(columns=[self.target_variable, self.date_column]), train_data[self.target_variable]
         X_val, y_val = val_data.drop(columns=[self.target_variable, self.date_column]), val_data[self.target_variable]

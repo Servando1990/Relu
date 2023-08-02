@@ -4,7 +4,7 @@ import pandas as pd
 import time
 import numpy as np
 import wandb
-
+#TODO this script doenst work, it needs to be fixed
 xgb_wnb = modal.Image.debian_slim().pip_install("pandas==1.4.2", "xgboost", "scikit-learn", "wandb")
 stub = modal.Stub("xgb_weight_and_biases")
 
@@ -35,7 +35,7 @@ sweep_config = {
 
 @stub.function(image=xgb_wnb)
 def sweep_run():
-    from src.models.xgb_model import QuantileXGB
+    from src.models.lgb_model import QuantileXGB
     X_train = pd.read_pickle('/Users/servandodavidtorresgarcia/Servando/Relu/Relu/data/processed/X_train.pkl')
     y_train = pd.read_pickle('/Users/servandodavidtorresgarcia/Servando/Relu/Relu/data/processed/y_train.pkl')
     X_val = pd.read_pickle('/Users/servandodavidtorresgarcia/Servando/Relu/Relu/data/processed/X_val.pkl')
