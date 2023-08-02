@@ -7,7 +7,7 @@ import logging
 
 
 
-
+#TODO Remove logging because we are using Weight and Biases
 
 class FeatureEngineeringProcess:
     def __init__(self):

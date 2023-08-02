@@ -70,7 +70,7 @@ def total_profit(prices, demands, costs):
 
 def demand_price_and_demand(
     lambda_value: float, 
-    prices_base: np.array, #  dim (skus_count, 5)
+    prices_base: np.array, #  dim (skus_count, 5) Predictions for machien learning model
     pr_demands_base: np.array #  dim (skus_count, 5)
 ):
     # ....
@@ -82,16 +82,15 @@ def demand_price_and_demand(
     # L = L(demand_versions, prices_versions, costs)
     # indexes = arg_max(L, dim=-1)
     # price_opt = price_versions[ indexes ]
-    price_versions = prices_opt[:, None] //...// np.array([0.85, 0.9, 1.0, 1.1, 1.2])
+    price_versions = prices_opt[:, None] #... np.array([0.85, 0.9, 1.0, 1.1, 1.2])
     
     # TODO: choose one best version prices_opt for each sku 
     # price_opt
-    price_versions = prices_opt[:, None] //...// np.array([0.95, 0.98, 1.0, 1.02, 1.05])
+    price_versions = prices_opt[:, None] #... np.array([0.95, 0.98, 1.0, 1.02, 1.05])
     # TODO: choose one best version prices_opt for each sku 
     # price_opt
     # demand_opt = interpolate(prices_base, pr_demands_base, price_opt)
 
-    # Second approach ----------------------
     prices_opt
     for (sku_prices_base, sku_pr_demands_base, sku_cost) in zip(prices_base, pr_demands_base, costs):
         l_max = -1000000000.0
