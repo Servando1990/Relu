@@ -1,5 +1,89 @@
+from ast import Tuple
 import numpy as np
 from typing import List
+
+
+class PricingOptimizer:
+    def __init__(self, 
+                 prices_base: np.ndarray, 
+                 predicted_demands_base: np.ndarray,
+                   costs: np.ndarray)-> None:
+        """
+        Initializes the PricingOptimizer with base prices, predicted demands, and costs.
+        """
+        self.prices_base = prices_base
+        self.predicted_demands_base = predicted_demands_base
+        self.costs = costs
+
+    def L(self,
+           price: float,
+             demand: float,
+               cost: float,
+                 lambda_value: float)-> float:
+        """
+        The Lagrange method that calculates the value for a given price, demand, cost, and lambda.
+        """
+        return demand * (price + lambda_value * (price - cost))
+
+    def total_profit(self,
+                      prices: np.ndarray,
+                        demands: np.ndarray,
+                          costs: np.ndarray)-> float:
+        """
+        Calculates the total profit given prices, demands, and costs.
+        """
+        return np.sum((prices - costs) * demands)
+
+    def demand_price_and_demand(self,
+                                 lambda_value: float,
+                                 price_multipliers: List[float] = [0.85, 0.9, 0.95, 0.98, 1.0, 1.02, 1.05, 1.10, 1.15, 1.20])-> Tuple[np.ndarray, np.ndarray]:
+        """
+        Finds the optimal prices and demands for a given lambda using the Lagrange method.
+        """
+        prices_opt = []
+        demands_opt = []
+        for (sku_prices_base, sku_pr_demands_base, sku_cost) in zip(self.prices_base, self.predicted_demands_base, self.costs):
+            l_max = -1000000000.0
+            sku_price_opt = sku_prices_base[2]
+            sku_demand_opt = 0
+            sku_prices = np.array(price_multipliers) * sku_prices_base[2]
+            for sku_price in sku_prices:
+                sku_demand = np.interp(sku_price, sku_prices_base, sku_pr_demands_base)
+                l = self.L(sku_price, sku_demand, sku_cost, lambda_value)
+                if l > l_max:
+                    l_max = l
+                    sku_price_opt = sku_price
+                    sku_demand_opt = sku_demand
+            prices_opt.append(sku_price_opt)
+            demands_opt.append(sku_demand_opt)
+
+        return np.array(demands_opt), np.array(prices_opt)
+
+    def binary_search(self,
+                       P0: float,
+                         left_lambda:float =3,
+                           right_lambda: float =5,
+                               max_iterations: int =1000,
+                                 lambda_accuracy: float =0.2):
+        """
+        Performs a binary search to find the optimal lambda value that maximizes profit.
+        """
+        iterations = 0
+        while right_lambda - left_lambda > lambda_accuracy and iterations < max_iterations:
+            lambda_value = (right_lambda + left_lambda) / 2.0
+            prices, demands = self.demand_price_and_demand(lambda_value)
+            current_profit = self.total_profit(prices, demands, self.costs)
+
+            if current_profit < P0:
+                left_lambda = lambda_value
+            else:
+                right_lambda = lambda_value
+            iterations += 1
+
+        return prices, lambda_value
+    
+
+
 
 def demand_curve(price: np.array, prices: np.array, predicted_sales: np.array) -> np.array:
     return np.interp(price, prices, predicted_sales)
