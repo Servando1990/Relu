@@ -1,6 +1,5 @@
-from ast import Tuple
 import numpy as np
-from typing import List
+from typing import List, Tuple, Dict
 
 
 class PricingOptimizer:
@@ -85,7 +84,7 @@ class PricingOptimizer:
 
 
 
-def demand_curve(price: np.array, prices: np.array, predicted_sales: np.array) -> np.array:
+""" def demand_curve(price: np.array, prices: np.array, predicted_sales: np.array) -> np.array:
     return np.interp(price, prices, predicted_sales)
 
 def total_profit(GMV: np.array, r_lambda: np.array, E_r_lambda: np.array, c: np.array) -> np.array:
@@ -145,11 +144,11 @@ def grid_search_lambda(P0: float, prices: np.array, predicted_sales: np.array, c
     # Return optimal price with best lambda
     optimal_price = calculate_optimal_price(c, best_lambda, s)
 
-    return optimal_price, best_lambda
+    return optimal_price, best_lambda """
 
 # Artem approach: --------------------------------------------------------------------------------
 
-def total_profit(prices, demands, costs):
+""" def total_profit(prices, demands, costs):
     return np.sum( (prices - costs) * demands )
 
 def demand_price_and_demand(
@@ -218,7 +217,7 @@ def binary_search(
         else:
             right_lambda = lambda_value
 
-    return prices, lambda_value
+    return prices, lambda_value """
 
 
 
