@@ -31,20 +31,21 @@ class PricingOptimizer:
         """
         Calculates the total profit given prices, demands, and costs.
         """
-        return np.sum((prices - np.array(list(self.costs.values()))) * demands)
+        return np.sum((prices - costs) * demands)
         
     def demand_price_and_demand(self, lambda_value: float) -> Tuple[np.ndarray, np.ndarray]:
         prices_opt = []
         demands_opt = []
         
-        for sku, demand_predictions in self.demand_curves.items():
+        for sku_index,(sku, demand_predictions)  in enumerate (self.demand_curves.items()):
             l_max = float('-inf')
             sku_price_opt = None
             sku_demand_opt = 0
 
             # Loop over price points and corresponding demands (using median, i.e., 0.5 quantile)
             for price, prediction in demand_predictions[0.5]:
-                l = self.L(price, prediction, self.costs[sku], lambda_value)
+                cost = self.costs[sku_index]
+                l = self.L(price, prediction, cost, lambda_value)
                 if l > l_max:
                     l_max = l
                     sku_price_opt = price
