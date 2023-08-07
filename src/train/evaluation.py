@@ -1,6 +1,7 @@
 import numpy as np
 
 # Define the QueryRMSE metric
+# TODO Test this function
 def query_rmse(y_true, y_pred, groups):
     group_corrections = {}
     for group in np.unique(groups):
