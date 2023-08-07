@@ -316,10 +316,3 @@ class FeatureEngineeringProcess:
         self.params['filter_stability_periods'] = {'N': N, 'threshold': threshold, 'removal_percentage': removal_percentage}
     
         return data, insufficient_data
-
-        
-
-
-
-
-
