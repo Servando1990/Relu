@@ -1,3 +1,4 @@
+# TODO Test this Makefile
 .PHONY: setup
 
 setup:
