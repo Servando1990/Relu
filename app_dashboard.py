@@ -39,11 +39,24 @@ def last_month_fn(df):
     end_date = datetime.datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0) - datetime.timedelta(seconds=1)
     return df[(df['date'] >= start_date) & (df['date'] <= end_date)]
 
+def prev_month_fn(df):
+    start_date = datetime.datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0) - datetime.timedelta(days=1)
+    start_date = start_date.replace(day=1)
+    end_date = datetime.datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0) - datetime.timedelta(seconds=1)
+    return df[(df['date'] >= start_date) & (df['date'] <= end_date)]
+
 def last_week_fn(df):
     start_date = datetime.datetime.now() - datetime.timedelta(days=datetime.datetime.now().weekday() + 7)
     start_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
     end_date = start_date + datetime.timedelta(days=6, hours=23, minutes=59, seconds=59)
     return df[(df['date'] >= start_date) & (df['date'] <= end_date)]
+
+def prev_week_fn(df):
+    start_date = datetime.datetime.now() - datetime.timedelta(days=datetime.datetime.now().weekday() + 7)
+    start_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
+    end_date = start_date + datetime.timedelta(days=6, hours=23, minutes=59, seconds=59)
+    return df[(df['date'] >= start_date) & (df['date'] <= end_date)]
+
 
 
 date_rng = pd.date_range(start='2023-01-01', end='2023-08-18', freq='D')
@@ -85,7 +98,7 @@ channel_colors = {
 }
 
 
-def plot_data(df, time_frame=None, channel=None):
+def plot_data(df, time_frame=None, channel=None, revenue_current=None, revenue_percentage_change=None):
 
 
     fig = go.Figure()
@@ -104,8 +117,11 @@ def plot_data(df, time_frame=None, channel=None):
     revenue_sum = round(df['revenue'].sum(), 2)
     # Format the revenue sum with commas and add the Euro sign
     revenue_str = f"€{revenue_sum:,.2f}"
+    percentage_color = "green" if revenue_percentage_change >= 0 else "red"
+    percentage_str = f"<span style='color: {percentage_color};'>{revenue_percentage_change:+.2f}%</span>"
+    #percentage_str = "{:+.2f}%".format(revenue_percentage_change)
     
-    title = f"<b style='font-size: 20px;'>Revenue: {revenue_str}</b> "
+    title = f"<b style='font-size: 20px;'>Revenue: {revenue_str}  {percentage_str} </b> "
     #title = "Revenue: ${} ".format(revenue_sum)  # Include the revenue sum in the title
     if time_frame:
         title += f"for {time_frame} "
@@ -126,11 +142,35 @@ def plot_data(df, time_frame=None, channel=None):
 def update_plot():
     # Apply the time filter function
     df_filtered_time = current_time_fn(df)
+
+    # Corrected conditions
+    if current_time_fn == this_month_fn:
+        df_filtered_prev_time = last_month_fn(df)
+    elif current_time_fn == this_week_fn:
+        df_filtered_prev_time = last_week_fn(df)
+    elif current_time_fn == last_month_fn:  # Removed (df)
+        df_filtered_prev_time = prev_month_fn(df)
+    elif current_time_fn == last_week_fn:   # Removed (df)
+        df_filtered_prev_time = prev_week_fn(df)
+
     if current_channel:
         # Apply the channel filter
         df_filtered_time = df_filtered_time[df_filtered_time['channel'] == current_channel]
+        df_filtered_prev_time = df_filtered_prev_time[df_filtered_prev_time['channel'] == current_channel]
+
+    # Calculate the revenue for current and previous timeframes
+    revenue_current = round(df_filtered_time['revenue'].sum(), 2)
+    revenue_previous = round(df_filtered_prev_time['revenue'].sum(), 2)
+
+    # Calculate the the percentage change
+    if revenue_previous != 0:
+        revenue_percentage_change = round((revenue_current - revenue_previous) / revenue_previous * 100, 2)
+    else:
+        revenue_percentage_change = 0
+
+
     # Update the plot with the filtered data and selected channel
-    return plot_data(df_filtered_time, current_time_frame, current_channel)
+    return plot_data(df_filtered_time, current_time_frame, current_channel, revenue_current, revenue_percentage_change)
 
 def select_time_frame(time_fn, time_frame):
     global current_time_fn, current_time_frame
