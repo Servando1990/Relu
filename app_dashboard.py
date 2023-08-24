@@ -1,4 +1,5 @@
 # create a function that uutputs todays date
+from turtle import up
 import pandas as pd
 # import datetime module
 import datetime
@@ -64,42 +65,60 @@ def prev_week_fn(df, metric):
 date_rng = pd.date_range(start='2023-01-01', end='2023-08-18', freq='D')
 channels = ["deplay.nl", "amazon.com", "bol.nl"]
 
-# Create a revenue series with more realistic fluctuations
-np.random.seed(42)
-revenue = []
-channel_data = []
-for i in range(len(date_rng)):
-    base_revenue = 100 + i * 2
-    daily_fluctuation = np.sin(i / 7) * 20
-    random_noise = np.random.normal(0, 10)
-    for ch in channels:
-        base_revenue = 100 + i * 2 + np.random.randint(-10, 10) # Base revenue with random variation
-        daily_fluctuation = np.sin(i / 7 + np.random.random()) * 20 # Fluctuation with random phase
-        random_noise = np.random.normal(0, 10) # Random noise
-        daily_revenue = base_revenue + daily_fluctuation + random_noise
-        revenue.append(daily_revenue)
-        channel_data.append(ch)
 
-data = {
-    'date': [date for date in date_rng for _ in channels],
-    'channel': channel_data,
-    'revenue': revenue
-}
+def generate_dataset(channels, date_rng):
+    np.random.seed(42)
+    revenue = []
+    channel_data = []
+    traffic_data = []
 
-df = pd.DataFrame(data)
+    traffic_multipliers = {
+        "deplay.nl": 1.5,
+        "amazon.com": 1.2,
+        "bol.nl": 1.3
+    }
 
-# Derive profit from revenue assuming 20% profit margin
-df['profit'] = df['revenue'] * 0.2
-# Derive sales from revenue using a variable conversion factor for each channel
-#conversion_factors = {
-    #"deplay.nl": 1.2,
-    #"amazon.com": 1.15,
-    #"bol.nl": 1.3
-#}
-#sales = [revenue[i] * conversion_factors[channel_data[i]] + np.random.normal(0, 5) for i in range(len(revenue))]
+    for i in range(len(date_rng)):
+        base_revenue = 100 + i * 2
+        daily_fluctuation = np.sin(i / 7) * 20
+        random_noise = np.random.normal(0, 10)
+        base_traffic = 1000 + i * 5
 
-# Add the sales column to the data dictionary
-#df['sales'] = sales
+        for ch in channels:
+            base_revenue = 100 + i * 2 + np.random.randint(-10, 10) # Base revenue with random variation
+            daily_fluctuation = np.sin(i / 7 + np.random.random()) * 20 # Fluctuation with random phase
+            random_noise = np.random.normal(0, 10) # Random noise
+            daily_revenue = base_revenue + daily_fluctuation + random_noise
+            daily_traffic = base_traffic * traffic_multipliers[ch] + np.sin(i / 5 + np.random.random()) * 50 + np.random.normal(0, 20) # Traffic with fluctuations
+            revenue.append(daily_revenue)
+            channel_data.append(ch)
+            traffic_data.append(daily_traffic)
+
+    data = {
+        'date': [date for date in date_rng for _ in channels],
+        'channel': channel_data,
+        'revenue': revenue,
+        'traffic': traffic_data
+    }
+
+    df = pd.DataFrame(data)
+
+    # Derive profit from revenue assuming 20% profit margin
+    df['profit'] = df['revenue'] * 0.2
+    # Derive sales from revenue using a variable conversion factor for each channel
+    conversion_factors = {
+        "deplay.nl": 1.2,
+        "amazon.com": 1.15,
+        "bol.nl": 1.3
+    }
+    sales = [revenue[i] * conversion_factors[channel_data[i]] + np.random.normal(0, 5) for i in range(len(revenue))]
+
+    # Add the sales column to the data dictionary
+    df['sales'] = sales
+
+    return df
+
+df = generate_dataset(channels, date_rng)
 
 
 current_time_fn = this_month_fn  # Default to this month
@@ -116,7 +135,11 @@ channel_colors = {
 
 def calculate_metrics(df, metric, current_time_fn, prev_time_fn, current_channel=None):
     current_values = current_time_fn(df, metric)
+    #print(f"Current Values ({metric}):")
+    #print(current_values)
     previous_values = prev_time_fn(df, metric)
+    #print(f"Previous Values ({metric}):")
+    #print(previous_values)
 
     if current_channel:
         current_values = current_values[current_values['channel'] == current_channel]
@@ -124,6 +147,8 @@ def calculate_metrics(df, metric, current_time_fn, prev_time_fn, current_channel
 
     current_sum = round(current_values[metric].sum(), 2)
     previous_sum = round(previous_values[metric].sum(), 2)
+    #print(f"Current Sum ({metric}): {current_sum}")
+    #print(f"Previous Sum ({metric}): {previous_sum}")
 
     if previous_sum != 0:
         percentage_change = round((current_sum - previous_sum) / previous_sum * 100, 2)
@@ -156,10 +181,16 @@ def plot_metric(df, metric, time_frame=None, channel=None):
     prev_time_fn = current_to_prev_time_fn_mapping[current_time_fn]
     current_sum, percentage_change = calculate_metrics(df, metric, current_time_fn, prev_time_fn, channel)
 
-    value_str = f"€{current_sum:,.2f}"
-    percentage_color = "green" if percentage_change >= 0 else "red"
-    percentage_str = f"<span style='color: {percentage_color};'>{percentage_change:+.2f}%</span>"
-    title = f"<b style='font-size: 20px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
+    title = ""
+
+    if metric == "traffic":
+        value_str = f"{current_sum:,.0f}"
+    else:
+
+        value_str = f"€{current_sum:,.2f}"
+        percentage_color = "green" if percentage_change >= 0 else "red"
+        percentage_str = f"<span style='color: {percentage_color};'>{percentage_change:+.2f}%</span>"
+        title = f"<b style='font-size: 20px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
 
 
     fig = go.Figure()
@@ -244,19 +275,19 @@ def select_time_frame(time_fn, time_frame):
     global current_time_fn, current_time_frame
     current_time_fn = time_fn
     current_time_frame = time_frame
-    return update_plot('revenue'), update_plot('profit')
+    return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic')
 
 def select_channel(channel):
     global current_channel
     current_channel = channel
-    return update_plot('revenue'), update_plot('profit')
+    return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic')
 
 def reset_plot():
     global current_time_fn, current_time_frame, current_channel
     current_time_fn = this_month_fn
     current_time_frame = "This Month"
     current_channel = None
-    return update_plot('revenue'), update_plot('profit')
+    return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic')
 
 
 def same_auth(username, password):
@@ -299,24 +330,63 @@ with gr.Blocks(theme= gr.themes.Soft(), css=css,) as demo:
         revenue_plot.update(value = update_plot("revenue"))
         profit_plot = gr.Plot()
         profit_plot.update(value = update_plot("profit"))
+    with gr.Column():
+        with gr.Row():
+            sales_plot = gr.Plot()
+            sales_plot.update(value = update_plot("sales"))
+            traffic_plot = gr.Plot()
+            traffic_plot.update(value = update_plot("traffic"))
+    
 
 
     # Timeframe buttons
-    this_month_button.click(lambda: select_time_frame(this_month_fn, "This Month"), outputs=[revenue_plot, profit_plot])
-    this_week_button.click(lambda: select_time_frame(this_week_fn, "This Week"), outputs=[revenue_plot, profit_plot])
-    last_week_button.click(lambda: select_time_frame(last_week_fn, "Last Week"), outputs=[revenue_plot, profit_plot])
-    last_month_button.click(lambda: select_time_frame(last_month_fn, "Last Month"), outputs=[revenue_plot, profit_plot])
+    this_month_button.click(lambda: select_time_frame(this_month_fn, "This Month"),
+                             outputs=[revenue_plot, 
+                                      profit_plot,
+                                      sales_plot,
+                                      traffic_plot])
+    this_week_button.click(lambda: select_time_frame(this_week_fn, "This Week"), 
+                           outputs=[revenue_plot,
+                                     profit_plot,
+                                     sales_plot,
+                                     traffic_plot])
+    last_week_button.click(lambda: select_time_frame(last_week_fn, "Last Week"),
+                            outputs=[revenue_plot,
+                                      profit_plot,
+                                      sales_plot,
+                                      traffic_plot])
+    last_month_button.click(lambda: select_time_frame(last_month_fn, "Last Month"), 
+                            outputs=[revenue_plot,
+                                      profit_plot,
+                                      sales_plot,
+                                      traffic_plot])
 
-    deplay_button.click(lambda: select_channel('deplay.nl'), outputs=[revenue_plot, profit_plot])
-    bol_button.click(lambda: select_channel('bol.nl'), outputs=[revenue_plot, profit_plot])
-    amazon_button.click(lambda: select_channel('amazon.com'), outputs=[revenue_plot, profit_plot])
+    deplay_button.click(lambda: select_channel('deplay.nl'), 
+                        outputs=[revenue_plot,
+                                  profit_plot,
+                                  sales_plot,
+                                  traffic_plot])
+    bol_button.click(lambda: select_channel('bol.nl'), 
+                     outputs=[revenue_plot,
+                               profit_plot,
+                               sales_plot,
+                               traffic_plot])
+    amazon_button.click(lambda: select_channel('amazon.com'), 
+                        outputs=[revenue_plot,
+                                  profit_plot,
+                                  sales_plot,
+                                  traffic_plot])
 
 
     
     with gr.Column():
         with gr.Row():
             reset_button = gr.Button(size="sm", value="Reset")
-            reset_button.click(reset_plot, outputs=[revenue_plot, profit_plot])
+            reset_button.click(reset_plot, 
+                               outputs=[revenue_plot,
+                                         profit_plot,
+                                         sales_plot,
+                                         traffic_plot])
 
 
     
