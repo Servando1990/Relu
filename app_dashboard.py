@@ -71,6 +71,8 @@ def generate_dataset(channels, date_rng):
     revenue = []
     channel_data = []
     traffic_data = []
+    conversion_rate = []
+    average_check = []
 
     traffic_multipliers = {
         "deplay.nl": 1.5,
@@ -87,18 +89,26 @@ def generate_dataset(channels, date_rng):
         for ch in channels:
             base_revenue = 100 + i * 2 + np.random.randint(-10, 10) # Base revenue with random variation
             daily_fluctuation = np.sin(i / 7 + np.random.random()) * 20 # Fluctuation with random phase
+            daily_fluctuation_conversion_rate = np.sin(i / 7 + np.random.random()) * 0.05
+            daily_fluctuation_average_check = np.sin(i / 7 + np.random.random()) * 5
             random_noise = np.random.normal(0, 10) # Random noise
             daily_revenue = base_revenue + daily_fluctuation + random_noise
             daily_traffic = base_traffic * traffic_multipliers[ch] + np.sin(i / 5 + np.random.random()) * 50 + np.random.normal(0, 20) # Traffic with fluctuations
+            daily_conversion_rate = 0.01 + daily_fluctuation_conversion_rate + np.random.normal(0, 0.005)
+            daily_average_check = 50 + daily_fluctuation_average_check + np.random.normal(0, 10)
             revenue.append(daily_revenue)
             channel_data.append(ch)
             traffic_data.append(daily_traffic)
+            conversion_rate.append(daily_conversion_rate)
+            average_check.append(daily_average_check)
 
     data = {
         'date': [date for date in date_rng for _ in channels],
         'channel': channel_data,
         'revenue': revenue,
-        'traffic': traffic_data
+        'traffic': traffic_data,
+        'conversion_rate': conversion_rate,
+        'average check': average_check
     }
 
     df = pd.DataFrame(data)
@@ -185,6 +195,9 @@ def plot_metric(df, metric, time_frame=None, channel=None):
 
     if metric == "traffic":
         value_str = f"{current_sum:,.0f}"
+        percentage_color = "green" if percentage_change >= 0 else "red"
+        percentage_str = " sessions {:+.2f}%".format(percentage_change)
+        title = f"<b style='font-size: 20px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
     else:
 
         value_str = f"€{current_sum:,.2f}"
@@ -275,19 +288,19 @@ def select_time_frame(time_fn, time_frame):
     global current_time_fn, current_time_frame
     current_time_fn = time_fn
     current_time_frame = time_frame
-    return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic')
+    return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic'), update_plot('conversion_rate'), update_plot('average check')
 
 def select_channel(channel):
     global current_channel
     current_channel = channel
-    return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic')
+    return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic'), update_plot('conversion_rate'), update_plot('average check')
 
 def reset_plot():
     global current_time_fn, current_time_frame, current_channel
     current_time_fn = this_month_fn
     current_time_frame = "This Month"
     current_channel = None
-    return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic')
+    return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic'), update_plot('conversion_rate'), update_plot('average check')
 
 
 def same_auth(username, password):
@@ -336,49 +349,13 @@ with gr.Blocks(theme= gr.themes.Soft(), css=css,) as demo:
             sales_plot.update(value = update_plot("sales"))
             traffic_plot = gr.Plot()
             traffic_plot.update(value = update_plot("traffic"))
-    
+    with gr.Column():
+        with gr.Row():
+            conversion_rate_plot = gr.Plot()
+            conversion_rate_plot.update(value = update_plot("conversion_rate"))
+            average_check_plot = gr.Plot()
+            average_check_plot.update(value = update_plot("average check"))
 
-
-    # Timeframe buttons
-    this_month_button.click(lambda: select_time_frame(this_month_fn, "This Month"),
-                             outputs=[revenue_plot, 
-                                      profit_plot,
-                                      sales_plot,
-                                      traffic_plot])
-    this_week_button.click(lambda: select_time_frame(this_week_fn, "This Week"), 
-                           outputs=[revenue_plot,
-                                     profit_plot,
-                                     sales_plot,
-                                     traffic_plot])
-    last_week_button.click(lambda: select_time_frame(last_week_fn, "Last Week"),
-                            outputs=[revenue_plot,
-                                      profit_plot,
-                                      sales_plot,
-                                      traffic_plot])
-    last_month_button.click(lambda: select_time_frame(last_month_fn, "Last Month"), 
-                            outputs=[revenue_plot,
-                                      profit_plot,
-                                      sales_plot,
-                                      traffic_plot])
-
-    deplay_button.click(lambda: select_channel('deplay.nl'), 
-                        outputs=[revenue_plot,
-                                  profit_plot,
-                                  sales_plot,
-                                  traffic_plot])
-    bol_button.click(lambda: select_channel('bol.nl'), 
-                     outputs=[revenue_plot,
-                               profit_plot,
-                               sales_plot,
-                               traffic_plot])
-    amazon_button.click(lambda: select_channel('amazon.com'), 
-                        outputs=[revenue_plot,
-                                  profit_plot,
-                                  sales_plot,
-                                  traffic_plot])
-
-
-    
     with gr.Column():
         with gr.Row():
             reset_button = gr.Button(size="sm", value="Reset")
@@ -386,10 +363,85 @@ with gr.Blocks(theme= gr.themes.Soft(), css=css,) as demo:
                                outputs=[revenue_plot,
                                          profit_plot,
                                          sales_plot,
-                                         traffic_plot])
+                                         traffic_plot,
+                                         conversion_rate_plot,
+                                         average_check_plot])
+    with gr.Column(equal_height=True):
+        with gr.Row(equal_height=True):
+
+            gr.HTML("""
+            <div style="font-size: 24px; font-weight: bold;">
+                <h1>Import Results</h1>
+                <div>Scanned SKU: <span style="font-size: larger; font-weight: bold;">23</span></div>
+                <div>Error SKU: <span style="font-size: larger; font-weight: bold;">32</span></div>
+                <div>Duplicated SKU: <span style="font-size: larger; font-weight: bold;">45</span></div>
+            </div>
+            """)
+            gr.Markdown(""
+                        "# Need more Metrics? \n""")
+    with gr.Column():
+            with gr.Row():
+                
+                gr.Textbox(label="Metrics", placeholder= 'Submit a metrics here...')
+                gr.Button(size="sm", value="Submit")
+            
+            
 
 
-    
+
+
+    # Timeframe buttons
+    this_month_button.click(lambda: select_time_frame(this_month_fn, "This Month"),
+                             outputs=[revenue_plot, 
+                                      profit_plot,
+                                      sales_plot,
+                                      traffic_plot,
+                                      conversion_rate_plot,
+                                      average_check_plot])
+    this_week_button.click(lambda: select_time_frame(this_week_fn, "This Week"), 
+                           outputs=[revenue_plot,
+                                     profit_plot,
+                                     sales_plot,
+                                     traffic_plot,
+                                     conversion_rate_plot,
+                                     average_check_plot])
+    last_week_button.click(lambda: select_time_frame(last_week_fn, "Last Week"),
+                            outputs=[revenue_plot,
+                                      profit_plot,
+                                      sales_plot,
+                                      traffic_plot,
+                                      conversion_rate_plot,
+                                      average_check_plot])
+    last_month_button.click(lambda: select_time_frame(last_month_fn, "Last Month"), 
+                            outputs=[revenue_plot,
+                                      profit_plot,
+                                      sales_plot,
+                                      traffic_plot,
+                                      conversion_rate_plot,
+                                      average_check_plot])
+
+    deplay_button.click(lambda: select_channel('deplay.nl'), 
+                        outputs=[revenue_plot,
+                                  profit_plot,
+                                  sales_plot,
+                                  traffic_plot,
+                                  conversion_rate_plot,
+                                  average_check_plot])
+    bol_button.click(lambda: select_channel('bol.nl'), 
+                     outputs=[revenue_plot,
+                               profit_plot,
+                               sales_plot,
+                               traffic_plot,
+                               conversion_rate_plot,
+                               average_check_plot])
+    amazon_button.click(lambda: select_channel('amazon.com'), 
+                        outputs=[revenue_plot,
+                                  profit_plot,
+                                  sales_plot,
+                                  traffic_plot,
+                                  conversion_rate_plot,
+                                  average_check_plot])
+   
 
 demo.launch(inbrowser=True, share=False )
 
