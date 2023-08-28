@@ -7,7 +7,8 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import gradio as gr
-from prometheus_client import MetricsHandler
+import random
+
 
 # create a function that outputs todays date in the format of "Monday, January 10th 2020 at 1:15pm"
 def get_date():
@@ -284,6 +285,54 @@ def update_plot(metric):
     # Update the plot with the filtered data and selected channel
     return plot_metric(df_filtered_time, current_time_frame, current_channel, revenue_current, revenue_percentage_change)b """
 
+def plot_quadrant():
+        # Labels and their coordinates
+    labels = ["Amazon", "Samsung", "Apple", "Walmart", "You"]
+    x_values = [random.uniform(-10, 10) for _ in range(4)] + [0]  # 'You' is at the origin (0, 0)
+    y_values = [random.uniform(-10, 10) for _ in range(4)] + [0]  # 'You' is at the origin (0, 0)
+
+    # Different sizes for the markers
+    marker_sizes = [10, 20, 30, 40, 50]
+
+    # Different colors for the markers
+    marker_colors = ['red', 'green', 'blue', 'purple', 'orange']
+
+    # Create the figure
+    fig = go.Figure()
+
+    # Add scatter plot for the data points
+    fig.add_trace(go.Scatter(
+        x=x_values,
+        y=y_values,
+        mode='markers+text',
+        marker=dict(size=marker_sizes, color=marker_colors),
+        text=labels,
+        textposition="top center"
+    ))
+
+    # Draw lines for the X and Y axes to divide the plot into 4 quadrants
+    fig.add_shape(
+        go.layout.Shape(type='line', x0=0, x1=0, y0=-10, y1=10,
+                        line=dict(color='Grey', width=1))
+    )
+
+    fig.add_shape(
+        go.layout.Shape(type='line', x0=-10, x1=10, y0=0, y1=0,
+                        line=dict(color='Grey', width=1))
+    )
+
+    # Set axis labels
+    fig.update_layout(
+        xaxis_title='Better Stock',
+        yaxis_title='Better Pricing',
+        xaxis=dict(range=[-10, 10]),
+        yaxis=dict(range=[-10, 10])
+    )
+
+    # Show the plot
+    #fig.show()
+    return gr.update(value=fig, visible=True)
+
 def select_time_frame(time_fn, time_frame):
     global current_time_fn, current_time_frame
     current_time_fn = time_fn
@@ -370,25 +419,28 @@ with gr.Blocks(theme= gr.themes.Soft(), css=css,) as demo:
         with gr.Row(equal_height=True):
 
             gr.HTML("""
-            <div style="font-size: 24px; font-weight: bold;">
+            <div style="font-size: 24px; font-weight: bold; text-align: center; margin: auto;">
                 <h1>Import Results</h1>
                 <div>Scanned SKU: <span style="font-size: larger; font-weight: bold;">23</span></div>
                 <div>Error SKU: <span style="font-size: larger; font-weight: bold;">32</span></div>
                 <div>Duplicated SKU: <span style="font-size: larger; font-weight: bold;">45</span></div>
             </div>
             """)
-            gr.Markdown(""
-                        "# Need more Metrics? \n""")
-    with gr.Column():
-            with gr.Row():
-                
-                gr.Textbox(label="Metrics", placeholder= 'Submit a metrics here...')
-                gr.Button(size="sm", value="Submit")
-            
-            
 
+    #with gr.Column(equal_height=True):
+        with gr.Row(equal_height=True):
+            gr.Markdown("""# Need more Metrics? """)
+        with gr.Row():
+            gr.Textbox(label="Metrics", placeholder= 'Submit a metrics here...')
+            gr.Button(size="sm", value="Submit")
+    with gr.Column(equal_height=True):
+        quadrant_plot = gr.Plot()
+        quadrant_button = gr.Button(size="sm", value="Quadrant")
+        quadrant_button.click(plot_quadrant, outputs=[quadrant_plot])
+        #plot_quadrant.update(value=quadrant_plot)
 
-
+        
+        
 
     # Timeframe buttons
     this_month_button.click(lambda: select_time_frame(this_month_fn, "This Month"),
@@ -441,6 +493,7 @@ with gr.Blocks(theme= gr.themes.Soft(), css=css,) as demo:
                                   traffic_plot,
                                   conversion_rate_plot,
                                   average_check_plot])
+    
    
 
 demo.launch(inbrowser=True, share=False )
