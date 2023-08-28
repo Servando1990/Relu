@@ -219,16 +219,6 @@ def plot_metric(df, metric, time_frame=None, channel=None):
             line_color = channel_colors[ch]
             fig.add_trace(go.Scatter(x=df_channel['date'], y=df_channel[metric], mode='lines', name=ch, line_color=line_color))
     
-    # Calculate the sum of revenue for the selected timeframe and channel(s)
-    #revenue_sum = round(df['revenue'].sum(), 2)
-    # Format the revenue sum with commas and add the Euro sign
-    #revenue_str = f"€{revenue_sum:,.2f}"
-    #percentage_color = "green" if revenue_percentage_change >= 0 else "red"
-    #percentage_str = f"<span style='color: {percentage_color};'>{revenue_percentage_change:+.2f}%</span>"
-    #percentage_str = "{:+.2f}%".format(revenue_percentage_change)
-    
-    #title = f"<b style='font-size: 20px;'>Revenue: {revenue_str}  {percentage_str} </b> "
-    #title = "Revenue: ${} ".format(revenue_sum)  # Include the revenue sum in the title
     if time_frame:
         title += f"for {time_frame} "
     if channel:
@@ -239,10 +229,108 @@ def plot_metric(df, metric, time_frame=None, channel=None):
         'y':0.9,
         'x':0.5,
         'xanchor': 'center',
-        'yanchor': 'top'}, 
-     )
+        'yanchor': 'top'}
+     ),
+    
+
     
     return gr.update(value=fig, visible=True)
+
+def plot_metric_updated(df, metric, time_frame=None, channel=None):
+    current_time_fn = time_frame_to_function_mapping[time_frame]
+    prev_time_fn = current_to_prev_time_fn_mapping[current_time_fn]
+    current_sum, percentage_change = calculate_metrics(df, metric, current_time_fn, prev_time_fn, channel)
+
+    title = ""
+
+    if metric == "traffic":
+        value_str = f"{current_sum:,.0f}"
+        percentage_color = "green" if percentage_change >= 0 else "red"
+        percentage_str = " sessions {:+.2f}%".format(percentage_change)
+        title = f"<b style='font-size: 20px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
+    else:
+
+        value_str = f"€{current_sum:,.2f}"
+        percentage_color = "green" if percentage_change >= 0 else "red"
+        percentage_str = f"<span style='color: {percentage_color};'>{percentage_change:+.2f}%</span>"
+        title = f"<b style='font-size: 20px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
+
+    fig = go.Figure()
+    
+    if channel:
+        df_channel = df[df['channel'] == channel]
+        line_color = channel_colors[channel]
+        fig.add_trace(go.Scatter(x=df_channel['date'], y=df_channel[metric], mode='lines', name=channel, line=dict(color=line_color), hoverinfo='x+y'))
+    else:
+        for ch in channels:
+            df_channel = df[df['channel'] == ch]
+            line_color = channel_colors[ch]
+            fig.add_trace(go.Scatter(x=df_channel['date'], y=df_channel[metric], mode='lines', name=ch, line=dict(color=line_color), hoverinfo='x+y'))
+    
+    if time_frame:
+        title += f" for {time_frame}"
+    if channel:
+        title += f" in {channel}"
+    
+    fig.update_layout(
+        title={
+            'text': title,
+            'y': 0.9,
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'
+        },
+
+        xaxis=dict(
+            showgrid=False,
+            showline=True,
+            linecolor='rgb(204, 204, 204)',
+            linewidth=2,
+            ticks='outside',
+            tickfont=dict(
+                family='Arial',
+                size=12,
+                color='rgb(82, 82, 82)',
+            ),
+        ),
+        yaxis=dict(
+            showgrid=False,
+            showline=True,
+            linecolor='rgb(204, 204, 204)',
+            linewidth=2,
+            ticks='outside',
+            tickfont=dict(
+                family='Arial',
+                size=12,
+                color='rgb(82, 82, 82)',
+            ),
+        ),
+        autosize=False,
+        margin=dict(
+            autoexpand=False,
+            l=100,
+            r=20,
+            t=110,
+        ),
+        showlegend=True,
+        plot_bgcolor='rgba(245, 245, 245, 0.8)',
+        legend=dict(
+            x=1,  # x-position of the legend; 1 means aligned to the right edge
+            y=1,  # y-position of the legend; 1 means aligned to the top edge
+            traceorder='normal',
+            font=dict(
+                family='sans-serif',
+                size=12,
+                color='black'
+            ),
+            bgcolor='rgba(255, 255, 255, 0.8)',  # Soft white background for the legend with some transparency
+            bordercolor='rgba(0, 0, 0, 0.2)',    # Soft black border for the legend
+            borderwidth=1
+        )
+    )
+    
+    return gr.update(value=fig, visible=True)
+
 
 def update_plot(metric):
     time_frame = current_time_frame
@@ -355,6 +443,31 @@ def reset_plot():
 def same_auth(username, password):
     return username == password
 
+# Create DataFrame
+data = {
+    "Category": ["phones", "earphones", "laptops", "monitors", "speakers"],
+    "Index": [0.98]*5,
+    "Amazon": [0.98]*5,
+    "Walmart": [0.96]*5,
+    "Samsung": [1.08]*5,
+    "Apple": [1.01]*5
+}
+
+df_index = pd.DataFrame(data)
+
+# Style function to color cells
+def color_cells(val):
+    color = 'green' if val < 1 else 'red'
+    return 'background-color: %s' % color
+
+# Apply styling function
+styled_df = df_index.style.applymap(color_cells, subset=df.columns.difference(['Category', 'Index']))
+
+# Display or save styled DataFrame
+# Convert styled DataFrame to HTML
+html = styled_df.render()
+
+
 css = """
 #deplay {background-color: #FFAAAA; color: #333; font-weight: bold;}
 #amazon {background-color: #FFFFAA; color: #333; font-weight: bold;}
@@ -438,6 +551,14 @@ with gr.Blocks(theme= gr.themes.Soft(), css=css,) as demo:
         quadrant_button = gr.Button(size="sm", value="Quadrant")
         quadrant_button.click(plot_quadrant, outputs=[quadrant_plot])
         #plot_quadrant.update(value=quadrant_plot)
+    with gr.Column(equal_height=True):
+        with gr.Row(equal_height=True):
+            gr.HTML("""
+            <div style="font-size: 24px; font-weight: bold; text-align: center; margin: auto;">
+                <h1>Styled DataFrame</h1>
+            </div>
+            """ + html)  # Add DataFrame HTML here
+        
 
         
         
