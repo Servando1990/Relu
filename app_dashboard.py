@@ -236,100 +236,6 @@ def plot_metric(df, metric, time_frame=None, channel=None):
     
     return gr.update(value=fig, visible=True)
 
-def plot_metric_updated(df, metric, time_frame=None, channel=None):
-    current_time_fn = time_frame_to_function_mapping[time_frame]
-    prev_time_fn = current_to_prev_time_fn_mapping[current_time_fn]
-    current_sum, percentage_change = calculate_metrics(df, metric, current_time_fn, prev_time_fn, channel)
-
-    title = ""
-
-    if metric == "traffic":
-        value_str = f"{current_sum:,.0f}"
-        percentage_color = "green" if percentage_change >= 0 else "red"
-        percentage_str = " sessions {:+.2f}%".format(percentage_change)
-        title = f"<b style='font-size: 20px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
-    else:
-
-        value_str = f"€{current_sum:,.2f}"
-        percentage_color = "green" if percentage_change >= 0 else "red"
-        percentage_str = f"<span style='color: {percentage_color};'>{percentage_change:+.2f}%</span>"
-        title = f"<b style='font-size: 20px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
-
-    fig = go.Figure()
-    
-    if channel:
-        df_channel = df[df['channel'] == channel]
-        line_color = channel_colors[channel]
-        fig.add_trace(go.Scatter(x=df_channel['date'], y=df_channel[metric], mode='lines', name=channel, line=dict(color=line_color), hoverinfo='x+y'))
-    else:
-        for ch in channels:
-            df_channel = df[df['channel'] == ch]
-            line_color = channel_colors[ch]
-            fig.add_trace(go.Scatter(x=df_channel['date'], y=df_channel[metric], mode='lines', name=ch, line=dict(color=line_color), hoverinfo='x+y'))
-    
-    if time_frame:
-        title += f" for {time_frame}"
-    if channel:
-        title += f" in {channel}"
-    
-    fig.update_layout(
-        title={
-            'text': title,
-            'y': 0.9,
-            'x': 0.5,
-            'xanchor': 'center',
-            'yanchor': 'top'
-        },
-
-        xaxis=dict(
-            showgrid=False,
-            showline=True,
-            linecolor='rgb(204, 204, 204)',
-            linewidth=2,
-            ticks='outside',
-            tickfont=dict(
-                family='Arial',
-                size=12,
-                color='rgb(82, 82, 82)',
-            ),
-        ),
-        yaxis=dict(
-            showgrid=False,
-            showline=True,
-            linecolor='rgb(204, 204, 204)',
-            linewidth=2,
-            ticks='outside',
-            tickfont=dict(
-                family='Arial',
-                size=12,
-                color='rgb(82, 82, 82)',
-            ),
-        ),
-        autosize=False,
-        margin=dict(
-            autoexpand=False,
-            l=100,
-            r=20,
-            t=110,
-        ),
-        showlegend=True,
-        plot_bgcolor='rgba(245, 245, 245, 0.8)',
-        legend=dict(
-            x=1,  # x-position of the legend; 1 means aligned to the right edge
-            y=1,  # y-position of the legend; 1 means aligned to the top edge
-            traceorder='normal',
-            font=dict(
-                family='sans-serif',
-                size=12,
-                color='black'
-            ),
-            bgcolor='rgba(255, 255, 255, 0.8)',  # Soft white background for the legend with some transparency
-            bordercolor='rgba(0, 0, 0, 0.2)',    # Soft black border for the legend
-            borderwidth=1
-        )
-    )
-    
-    return gr.update(value=fig, visible=True)
 
 
 def update_plot(metric):
@@ -340,38 +246,6 @@ def update_plot(metric):
 
     return plot_metric(df, metric, time_frame, channel)
 
-""" def update_plot():
-    # Apply the time filter function
-    df_filtered_time = current_time_fn(df)
-
-    # Corrected conditions
-    if current_time_fn == this_month_fn:
-        df_filtered_prev_time = last_month_fn(df)
-    elif current_time_fn == this_week_fn:
-        df_filtered_prev_time = last_week_fn(df)
-    elif current_time_fn == last_month_fn:  # Removed (df)
-        df_filtered_prev_time = prev_month_fn(df)
-    elif current_time_fn == last_week_fn:   # Removed (df)
-        df_filtered_prev_time = prev_week_fn(df)
-
-    if current_channel:
-        # Apply the channel filter
-        df_filtered_time = df_filtered_time[df_filtered_time['channel'] == current_channel]
-        df_filtered_prev_time = df_filtered_prev_time[df_filtered_prev_time['channel'] == current_channel]
-
-    # Calculate the revenue for current and previous timeframes
-    revenue_current = round(df_filtered_time['revenue'].sum(), 2)
-    revenue_previous = round(df_filtered_prev_time['revenue'].sum(), 2)
-
-    # Calculate the the percentage change
-    if revenue_previous != 0:
-        revenue_percentage_change = round((revenue_current - revenue_previous) / revenue_previous * 100, 2)
-    else:
-        revenue_percentage_change = 0
-
-
-    # Update the plot with the filtered data and selected channel
-    return plot_metric(df_filtered_time, current_time_frame, current_channel, revenue_current, revenue_percentage_change)b """
 
 def plot_quadrant():
         # Labels and their coordinates
@@ -453,7 +327,7 @@ data = {
     "Apple": [1.01]*5
 }
 
-df_index = pd.DataFrame(data)
+#df_index = pd.DataFrame(data)
 
 # Style function to color cells
 def color_cells(val):
@@ -461,11 +335,11 @@ def color_cells(val):
     return 'background-color: %s' % color
 
 # Apply styling function
-styled_df = df_index.style.applymap(color_cells, subset=df.columns.difference(['Category', 'Index']))
+#styled_df = df_index.style.applymap(color_cells, subset=df.columns.difference(['Category', 'Index']))
 
 # Display or save styled DataFrame
 # Convert styled DataFrame to HTML
-html = styled_df.render()
+#html = styled_df.render()
 
 
 css = """
@@ -505,18 +379,19 @@ with gr.Blocks(theme= gr.themes.Soft(), css=css,) as demo:
         revenue_plot.update(value = update_plot("revenue"))
         profit_plot = gr.Plot()
         profit_plot.update(value = update_plot("profit"))
-    with gr.Column():
-        with gr.Row():
-            sales_plot = gr.Plot()
-            sales_plot.update(value = update_plot("sales"))
-            traffic_plot = gr.Plot()
-            traffic_plot.update(value = update_plot("traffic"))
+        sales_plot = gr.Plot()
+        sales_plot.update(value = update_plot("sales"))
+    #with gr.Column():
+        #with gr.Row():
+
     with gr.Column():
         with gr.Row():
             conversion_rate_plot = gr.Plot()
             conversion_rate_plot.update(value = update_plot("conversion_rate"))
             average_check_plot = gr.Plot()
             average_check_plot.update(value = update_plot("average check"))
+            traffic_plot = gr.Plot()
+            traffic_plot.update(value = update_plot("traffic"))
 
     with gr.Column():
         with gr.Row():
@@ -551,13 +426,13 @@ with gr.Blocks(theme= gr.themes.Soft(), css=css,) as demo:
         quadrant_button = gr.Button(size="sm", value="Quadrant")
         quadrant_button.click(plot_quadrant, outputs=[quadrant_plot])
         #plot_quadrant.update(value=quadrant_plot)
-    with gr.Column(equal_height=True):
-        with gr.Row(equal_height=True):
-            gr.HTML("""
-            <div style="font-size: 24px; font-weight: bold; text-align: center; margin: auto;">
-                <h1>Styled DataFrame</h1>
-            </div>
-            """ + html)  # Add DataFrame HTML here
+    #with gr.Column(equal_height=True):
+       # with gr.Row(equal_height=True):
+            #gr.HTML("""
+            #<div style="font-size: 24px; font-weight: bold; text-align: center; margin: auto;">
+             #   <h1>Styled DataFrame</h1>
+            #</div>
+            #""" + html)  # Add DataFrame HTML here
         
 
         
@@ -617,7 +492,7 @@ with gr.Blocks(theme= gr.themes.Soft(), css=css,) as demo:
     
    
 
-demo.launch(inbrowser=True, share=False )
+demo.launch(inbrowser=True, share=False)
 
 
 
