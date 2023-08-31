@@ -144,17 +144,17 @@ channel_colors = {
 
 # Create a fucntion called calculate_metrics
 
-def calculate_metrics(df, metric, current_time_fn, prev_time_fn, current_channel=None):
+def calculate_metrics(df, metric, current_time_fn, prev_time_fn, current_channels=None):
     current_values = current_time_fn(df, metric)
-    #print(f"Current Values ({metric}):")
-    #print(current_values)
     previous_values = prev_time_fn(df, metric)
-    #print(f"Previous Values ({metric}):")
-    #print(previous_values)
 
-    if current_channel:
-        current_values = current_values[current_values['channel'] == current_channel]
-        previous_values = previous_values[previous_values['channel'] == current_channel]
+    if current_channels:
+        current_values = current_values[current_values['channel'].isin(channels)]
+        previous_values = previous_values[previous_values['channel'].isin(channels)]
+
+    # if current_channel:
+    #     current_values = current_values[current_values['channel'] == current_channel]
+    #     previous_values = previous_values[previous_values['channel'] == current_channel]
 
     current_sum = round(current_values[metric].sum(), 2)
     previous_sum = round(previous_values[metric].sum(), 2)
@@ -198,13 +198,13 @@ def plot_metric(df, metric, time_frame=None, channel=None):
         value_str = f"{current_sum:,.0f}"
         percentage_color = "green" if percentage_change >= 0 else "red"
         percentage_str = " sessions {:+.2f}%".format(percentage_change)
-        title = f"<b style='font-size: 20px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
+        title = f"<b style='font-size: 15px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
     else:
 
         value_str = f"€{current_sum:,.2f}"
         percentage_color = "green" if percentage_change >= 0 else "red"
         percentage_str = f"<span style='color: {percentage_color};'>{percentage_change:+.2f}%</span>"
-        title = f"<b style='font-size: 20px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
+        title = f"<b style='font-size: 15px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
 
 
     fig = go.Figure()
@@ -219,10 +219,10 @@ def plot_metric(df, metric, time_frame=None, channel=None):
             line_color = channel_colors[ch]
             fig.add_trace(go.Scatter(x=df_channel['date'], y=df_channel[metric], mode='lines', name=ch, line_color=line_color))
     
-    if time_frame:
-        title += f"for {time_frame} "
-    if channel:
-        title += f"in {channel}"
+    # if time_frame:
+    #     title += f"for {time_frame} "
+    # if channel:
+    #     title += f"in {channel}"
        
     fig.update_layout(title={
         'text': title,
@@ -240,7 +240,7 @@ def plot_metric(df, metric, time_frame=None, channel=None):
 
 def update_plot(metric):
     time_frame = current_time_frame
-    channel = current_channel
+    channel = current_channels if current_channels else None
     #revenue_plot = plot_metric(df, "revenue", time_frame, channel)
     #profit_plot = plot_metric(df, "profit", time_frame, channel) # Assuming the profit column exists
 
@@ -301,17 +301,23 @@ def select_time_frame(time_fn, time_frame):
     current_time_frame = time_frame
     return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic'), update_plot('conversion_rate'), update_plot('average check')
 
+current_channels = []
+
 def select_channel(channel):
-    global current_channel
-    current_channel = channel
+    global current_channels
+    if channel in current_channels:
+        current_channels.remove(channel)
+    else: 
+        current_channels.append(channel)
+    #current_channel = channel
     return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic'), update_plot('conversion_rate'), update_plot('average check')
 
-def reset_plot():
-    global current_time_fn, current_time_frame, current_channel
-    current_time_fn = this_month_fn
-    current_time_frame = "This Month"
-    current_channel = None
-    return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic'), update_plot('conversion_rate'), update_plot('average check')
+# def reset_plot():
+#     global current_time_fn, current_time_frame, current_channel
+#     current_time_fn = this_month_fn
+#     current_time_frame = "This Month"
+#     current_channel = None
+#     return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic'), update_plot('conversion_rate'), update_plot('average check')
 
 
 def same_auth(username, password):
@@ -393,16 +399,16 @@ with gr.Blocks(theme= gr.themes.Soft(), css=css,) as demo:
             traffic_plot = gr.Plot()
             traffic_plot.update(value = update_plot("traffic"))
 
-    with gr.Column():
-        with gr.Row():
-            reset_button = gr.Button(size="sm", value="Reset")
-            reset_button.click(reset_plot, 
-                               outputs=[revenue_plot,
-                                         profit_plot,
-                                         sales_plot,
-                                         traffic_plot,
-                                         conversion_rate_plot,
-                                         average_check_plot])
+    # with gr.Column():
+    #     with gr.Row():
+    #         reset_button = gr.Button(size="sm", value="Reset")
+    #         reset_button.click(reset_plot, 
+    #                            outputs=[revenue_plot,
+    #                                      profit_plot,
+    #                                      sales_plot,
+    #                                      traffic_plot,
+    #                                      conversion_rate_plot,
+    #                                      average_check_plot])
     with gr.Column(equal_height=True):
         with gr.Row(equal_height=True):
 
