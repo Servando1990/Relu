@@ -7,7 +7,7 @@ import logging
 
 
 
-
+#TODO Remove logging because we are using Weight and Biases
 
 class FeatureEngineeringProcess:
     def __init__(self):
@@ -47,7 +47,7 @@ class FeatureEngineeringProcess:
         Returns:
             df: Transformed pd.DataFrame
         """
-        #TODO: add more numerical transformations
+
         for feature in features:
             for group_feature in group_features:
                 df[f"{group_feature}_{feature}_mean"] = df.groupby(group_feature)[feature].transform("mean")
@@ -67,7 +67,7 @@ class FeatureEngineeringProcess:
         """
         # Sort values by sku and date
         df = df.sort_values(by=["SKU", "Date"])
-        df["gmv"] = df["Qty"] * df["price"] #TODO hardcoded variables
+        df["gmv"] = df["Qty"] * df["price"] 
         #compute gmv per product for the last N days
         df[f"gmv_last_{window}_days"] = df.groupby("SKU")["gmv"].transform(lambda x: x.rolling(window).sum())
 
@@ -148,15 +148,15 @@ class FeatureEngineeringProcess:
         Args:
             data (pd.DataFrame): DataFrame to be transformed
             N (int): Lookback period in days
-            u_range (Iterable[int]): Range of values for u in correlation calculation
-            v_range (Iterable[int]): Range of values for v in correlation calculation
+            uv_pairs (List[Tuple[float, float]]): List of tuples with u and v values
+
 
         Returns:
             pd.DataFrame: Transformed DataFrame
         """
         
         # Sort data by SKU and date
-        data = data.sort_values(by=['SKU', 'Date']) #TODO hardcoded variables
+        data = data.sort_values(by=['SKU', 'Date']) 
 
         # Group the data by SKU
         grouped = data.groupby('SKU')
@@ -209,9 +209,7 @@ class FeatureEngineeringProcess:
         Args:
             data (pd.DataFrame): DataFrame
             N (int): represents the number of days for a short-term average. 
-             Ideal: Several features with different window sizes. 
-                This is the window of time over which you calculate the average price and sales. 
-                For example, if you set N to 7, you calculate the average price and sales over the last 7 days.
+            window_sizes (List[int]): List of window sizes to be used for the short-term average.
             long_period (int): represents the number of days over a longer-term average. 
                 This is used to calculate the reference price (price0) and reference demand (demand0) which are used to normalize the short-term average.
                 For example, if long_period is set to 28, it means that you calculate the average price and average demand over the last 28 days to use as the reference values for normalization.
@@ -225,23 +223,36 @@ class FeatureEngineeringProcess:
 
         grouped = data.groupby('SKU')
 
-        # Placeholder DataFrame for the results
-        results = pd.DataFrame()
+        # Placeholder list for the results
+        results = []
 
-        for sku, group in grouped:
+        for sku, group in grouped:               
+            
+            # Calculate reference price and demand
+            price0 = group['price'].rolling(window=long_period).mean()
+            demand0 = group['sales'].rolling(window=long_period).mean()
+
+            # Use ffill  the NaNs with the last valid observation
+            price0 = price0.fillna(method='ffill')
+            demand0 = demand0.fillna(method='ffill')
+
+            # Replace zeros with NaNs after forward filling
+            price0 = price0.replace(to_replace=0, value=np.nan)
+            demand0 = demand0.replace(to_replace=0, value=np.nan)
+
+            price0.fillna(method='bfill', inplace=True)
+            demand0.fillna(method='bfill', inplace=True)
+
+            # Loop through the window sizes
             for N in window_sizes:
-   
+
                 # Calculate average price and sales for the last N days
                 group[f'avg_price_last_{N}_days'] = group['price'].rolling(window=N).mean()
                 group[f'avg_sales_last_{N}_days'] = group['sales'].rolling(window=N).mean()
-                
-                # Calculate reference price and demand
-                price0 = group['price'].rolling(window=long_period).mean().replace(0, np.nan) #FIXME careful with nan zeros and nans are bad
-                demand0 = group['sales'].rolling(window=long_period).mean().replace(0, np.nan)
-
+    
                 # Normalize average price and sales
-                group[f'normalized_avg_price_{N}_days'] = group[f'avg_price_last_{N}_days'] / price0
-                group[f'normalized_avg_sales_{N}_days'] = group[f'avg_sales_last_{N}_days'] / demand0
+                #group[f'normalized_avg_price_{N}_days'] = group[f'avg_price_last_{N}_days'] / price0
+                #group[f'normalized_avg_sales_{N}_days'] = group[f'avg_sales_last_{N}_days'] / demand0
                 
                 # Apply log transformation
                 group[f'normalized_log_avg_price_{N}_days'] = np.log(group[f'avg_price_last_{N}_days'] / price0)
@@ -251,11 +262,13 @@ class FeatureEngineeringProcess:
                 group[f'normalized_std_price_{N}_days'] = group['price'].rolling(window=N).std() / group[f'avg_price_last_{N}_days']
                 group[f'normalized_std_sales_{N}_days'] = group['sales'].rolling(window=N).std() / group[f'avg_sales_last_{N}_days']
 
-                # Drop 'avg_price_last_N_days' and 'avg_sales_last_N_days' columns
+                #  Drop 'avg_price_last_N_days' and 'avg_sales_last_N_days' columns
                 group = group.drop(columns=[f'avg_price_last_{N}_days', f'avg_sales_last_{N}_days'])
 
-            # Append the group to the results Dataframe
-            results = pd.concat([results, group])
+            results.append(group)
+
+        # Append the group to the results Dataframe
+        results = pd.concat(results)
         # log and save parameters of the function
         self.logger.info(f"normalize_features: window_sizes={window_sizes}, long_period={long_period}")
         # save parameters of the function
@@ -289,7 +302,13 @@ class FeatureEngineeringProcess:
         data = data.drop(indices_to_remove)
 
         # Create a separate DataFrame for rows with insufficient data
+        # By default this df is going to capture the first N days of the window
+        # Example: N=7 until the 7th day avg_price_last_n_day is going to be empty
+        # TODO See if insufficient data has other cases than the first N days
         insufficient_data = data[data[f'avg_price_last_{N}_days'].isna() & data['price'].notna()]
+
+        # Drop "avg_price_last_N_days" and "price_variation" columns
+        data = data.drop(columns=[f'avg_price_last_{N}_days', 'price_variation'])
 
         # log and save parameters of the function
         self.logger.info(f"filter_stability_periods: N={N}, threshold={threshold}, removal_percentage={removal_percentage}")
@@ -297,10 +316,3 @@ class FeatureEngineeringProcess:
         self.params['filter_stability_periods'] = {'N': N, 'threshold': threshold, 'removal_percentage': removal_percentage}
     
         return data, insufficient_data
-
-        
-
-
-
-
-

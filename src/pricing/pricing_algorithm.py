@@ -1,7 +1,89 @@
 import numpy as np
-from typing import List
+from typing import List, Tuple, Dict
 
-def demand_curve(price: np.array, prices: np.array, predicted_sales: np.array) -> np.array:
+
+class PricingOptimizer:
+    def __init__(self, 
+                 demand_curves: Dict[str, Dict[float, List[Tuple[float, float]]]], 
+                 #price_points_per_sku: Dict,
+                   costs: np.ndarray)-> None:
+        """
+        Initializes the PricingOptimizer with base prices, predicted demands, and costs.
+        """
+        self.demand_curves = demand_curves
+        #self.price_points_per_sku = price_points_per_sku
+        self.costs = costs
+
+    def L(self,
+           price: float,
+             demand: float,
+               cost: float,
+                 lambda_value: float)-> float:
+        """
+        The Lagrange method that calculates the value for a given price, demand, cost, and lambda.
+        """
+        return demand * (price + lambda_value * (price - cost))
+
+    def total_profit(self,
+                      prices: np.ndarray,
+                        demands: np.ndarray,
+                          costs: np.ndarray)-> float:
+        """
+        Calculates the total profit given prices, demands, and costs.
+        """
+        return np.sum((prices - costs) * demands)
+        
+    def demand_price_and_demand(self, lambda_value: float) -> Tuple[np.ndarray, np.ndarray]:
+        prices_opt = []
+        demands_opt = []
+        
+        for sku_index,(sku, demand_predictions)  in enumerate (self.demand_curves.items()):
+            l_max = float('-inf')
+            sku_price_opt = None
+            sku_demand_opt = 0
+
+            # Loop over price points and corresponding demands (using median, i.e., 0.5 quantile)
+            for price, prediction in demand_predictions[0.5]:
+                cost = self.costs[sku_index]
+                l = self.L(price, prediction, cost, lambda_value)
+                if l > l_max:
+                    l_max = l
+                    sku_price_opt = price
+                    sku_demand_opt = prediction
+
+            prices_opt.append(sku_price_opt)
+            demands_opt.append(sku_demand_opt)
+
+        return np.array(demands_opt), np.array(prices_opt)
+
+
+    def binary_search(self,
+                       P0: float,
+                         left_lambda:float =3,
+                           right_lambda: float =5,
+                               max_iterations: int =1000,
+                                 lambda_accuracy: float =0.2):
+        """
+        Performs a binary search to find the optimal lambda value that maximizes profit.
+        """
+        iterations = 0
+        while right_lambda - left_lambda > lambda_accuracy and iterations < max_iterations:
+            lambda_value = (right_lambda + left_lambda) / 2.0
+            prices, demands = self.demand_price_and_demand(lambda_value)
+            current_profit = self.total_profit(prices, demands, self.costs)
+
+            if current_profit < P0:
+                left_lambda = lambda_value
+            else:
+                right_lambda = lambda_value
+            iterations += 1
+
+        return prices, lambda_value
+    
+
+
+
+""" def demand_curve(price: np.array, prices: np.array, predicted_sales: np.array) -> np.array:
     return np.interp(price, prices, predicted_sales)
 
 def total_profit(GMV: np.array, r_lambda: np.array, E_r_lambda: np.array, c: np.array) -> np.array:
@@ -61,16 +143,16 @@ def grid_search_lambda(P0: float, prices: np.array, predicted_sales: np.array, c
     # Return optimal price with best lambda
     optimal_price = calculate_optimal_price(c, best_lambda, s)
 
-    return optimal_price, best_lambda
+    return optimal_price, best_lambda """
 
 # Artem approach: --------------------------------------------------------------------------------
 
-def total_profit(prices, demands, costs):
+""" def total_profit(prices, demands, costs):
     return np.sum( (prices - costs) * demands )
 
 def demand_price_and_demand(
     lambda_value: float, 
-    prices_base: np.array, #  dim (skus_count, 5)
+    prices_base: np.array, #  dim (skus_count, 5) Predictions for machien learning model
     pr_demands_base: np.array #  dim (skus_count, 5)
 ):
     # ....
@@ -82,16 +164,15 @@ def demand_price_and_demand(
     # L = L(demand_versions, prices_versions, costs)
     # indexes = arg_max(L, dim=-1)
     # price_opt = price_versions[ indexes ]
-    price_versions = prices_opt[:, None] //...// np.array([0.85, 0.9, 1.0, 1.1, 1.2])
+    price_versions = prices_opt[:, None] #... np.array([0.85, 0.9, 1.0, 1.1, 1.2])
     
     # TODO: choose one best version prices_opt for each sku 
     # price_opt
-    price_versions = prices_opt[:, None] //...// np.array([0.95, 0.98, 1.0, 1.02, 1.05])
+    price_versions = prices_opt[:, None] #... np.array([0.95, 0.98, 1.0, 1.02, 1.05])
     # TODO: choose one best version prices_opt for each sku 
     # price_opt
     # demand_opt = interpolate(prices_base, pr_demands_base, price_opt)
 
-    # Second approach ----------------------
     prices_opt
     for (sku_prices_base, sku_pr_demands_base, sku_cost) in zip(prices_base, pr_demands_base, costs):
         l_max = -1000000000.0
@@ -135,7 +216,7 @@ def binary_search(
         else:
             right_lambda = lambda_value
 
-    return prices, lambda_value
+    return prices, lambda_value """
 
 
 
