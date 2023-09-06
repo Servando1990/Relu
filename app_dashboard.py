@@ -446,12 +446,10 @@ with gr.Blocks(theme= gr.themes.Soft(), css=css,) as demo:
             gr.Markdown("""# Need more Metrics? """)
         with gr.Row():
             metrics_textbox_inp = gr.Textbox(label="Metrics", placeholder= 'Submit a metrics here...')
-            metrics_textbox_out = gr.Textbox(label = None)
-            submit_button = gr.Button("Run")
+            metrics_textbox_out = gr.Textbox(label = "Output")
+            submit_button = gr.Button("Submit")
             submit_button.click(fn = add_metrics, inputs=[metrics_textbox_inp], outputs=[metrics_textbox_out])
           
-                        
-            #gr.Button(size="sm", value="Submit")
     with gr.Column(equal_height=True):
         quadrant_plot = gr.Plot()
         quadrant_button = gr.Button(size="sm", value="Quadrant")
