@@ -63,7 +63,7 @@ def prev_week_fn(df, metric):
 
 
 
-date_rng = pd.date_range(start='2023-01-01', end='2023-08-18', freq='D')
+date_rng = pd.date_range(start='2023-01-01', end='2023-11-30', freq='D')
 channels = ["deplay.nl", "amazon.com", "bol.nl"]
 
 
@@ -134,7 +134,7 @@ df = generate_dataset(channels, date_rng)
 
 current_time_fn = this_month_fn  # Default to this month
 current_time_frame = "This Month"  # Default time frame label
-current_channel = None  # Default to all channels
+#current_channel = None  # Default to all channels
 
 channel_colors = {
     "deplay.nl": "red",
@@ -151,10 +151,14 @@ def calculate_metrics(df, metric, current_time_fn, prev_time_fn, current_channel
     if current_channels:
         current_values = current_values[current_values['channel'].isin(channels)]
         previous_values = previous_values[previous_values['channel'].isin(channels)]
+    
+    if current_values.empty:
+        print(f"Debug: Current DataFrame is empty for {metric}.")
+    if previous_values.empty:
+        print(f"Debug: Previous DataFrame is empty for {metric}.")
 
-    # if current_channel:
-    #     current_values = current_values[current_values['channel'] == current_channel]
-    #     previous_values = previous_values[previous_values['channel'] == current_channel]
+    #print(f"Debug: Current values for {metric} are {current_values}")  # Debugging line
+    #print(f"Debug: Previous values for {metric} are {previous_values}")  # Debugging line
 
     current_sum = round(current_values[metric].sum(), 2)
     previous_sum = round(previous_values[metric].sum(), 2)
@@ -185,45 +189,48 @@ current_to_prev_time_fn_mapping = {
     last_month_fn: prev_month_fn
 }
 
+current_channels = []
 
-def plot_metric(df, metric, time_frame=None, channel=None):
+def plot_metric(df, metric, time_frame=None, current_channels=None):
 
     current_time_fn = time_frame_to_function_mapping[time_frame]
     prev_time_fn = current_to_prev_time_fn_mapping[current_time_fn]
-    current_sum, percentage_change = calculate_metrics(df, metric, current_time_fn, prev_time_fn, channel)
+    current_sum, percentage_change = calculate_metrics(df, metric, current_time_fn, prev_time_fn, current_channels)
 
-    title = ""
+    
 
     if metric == "traffic":
         value_str = f"{current_sum:,.0f}"
         percentage_color = "green" if percentage_change >= 0 else "red"
         percentage_str = " sessions {:+.2f}%".format(percentage_change)
-        title = f"<b style='font-size: 15px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
+        #title = f"<b style='font-size: 15px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
     else:
 
         value_str = f"€{current_sum:,.2f}"
         percentage_color = "green" if percentage_change >= 0 else "red"
         percentage_str = f"<span style='color: {percentage_color};'>{percentage_change:+.2f}%</span>"
-        title = f"<b style='font-size: 15px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
+        #title = f"<b style='font-size: 15px;'>{metric.title()}: {value_str}  {percentage_str} </b> "
+
+    title = f"<b style='font-size: 15px;'>{metric.title()}: {value_str}  {percentage_str} </b>"
 
 
     fig = go.Figure()
     
-    if channel:
-        df_channel = df[df['channel'] == channel]
-        line_color = channel_colors[channel]
-        fig.add_trace(go.Scatter(x=df['date'], y=df_channel[metric], mode='lines', name=channel, line_color=line_color ))
+    if current_channels:
+        df_channel = df[df['channel'].isin(current_channels)]
+        for ch in current_channels:
+            df_single_channel = df_channel[df_channel['channel'] == ch]
+            line_color = channel_colors[ch]
+            fig.add_trace(go.Scatter(x=df_single_channel['date'], y=df_single_channel[metric], mode='lines', name=ch, line_color=line_color))
     else:
         for ch in channels:
             df_channel = df[df['channel'] == ch]
             line_color = channel_colors[ch]
             fig.add_trace(go.Scatter(x=df_channel['date'], y=df_channel[metric], mode='lines', name=ch, line_color=line_color))
-    
-    # if time_frame:
-    #     title += f"for {time_frame} "
-    # if channel:
-    #     title += f"in {channel}"
-       
+
+    if time_frame:
+        title += f"for {time_frame} "
+     
     fig.update_layout(title={
         'text': title,
         'y':0.9,
@@ -297,27 +304,33 @@ def plot_quadrant():
 
 def select_time_frame(time_fn, time_frame):
     global current_time_fn, current_time_frame
+    #print(f"Debug: Current time frame is {current_time_frame}")
     current_time_fn = time_fn
     current_time_frame = time_frame
     return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic'), update_plot('conversion_rate'), update_plot('average check')
 
-current_channels = []
+
 
 def select_channel(channel):
     global current_channels
-    if channel in current_channels:
-        current_channels.remove(channel)
-    else: 
-        current_channels.append(channel)
+    #print(f"Debug: Current channels selected are {current_channels}")
+    if len(current_channels) == 3:
+        current_channels = [channel]
+    else:
+
+        if channel in current_channels:
+            current_channels.remove(channel)
+        else: 
+            current_channels.append(channel)
     #current_channel = channel
     return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic'), update_plot('conversion_rate'), update_plot('average check')
 
-# def reset_plot():
-#     global current_time_fn, current_time_frame, current_channel
-#     current_time_fn = this_month_fn
-#     current_time_frame = "This Month"
-#     current_channel = None
-#     return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic'), update_plot('conversion_rate'), update_plot('average check')
+def reset_plot():
+    global current_time_fn, current_time_frame, current_channel
+    current_time_fn = this_month_fn
+    current_time_frame = "This Month"
+    current_channel = None
+    return update_plot('revenue'), update_plot('profit'), update_plot('sales'), update_plot('traffic'), update_plot('conversion_rate'), update_plot('average check')
 
 
 def same_auth(username, password):
@@ -346,6 +359,13 @@ def color_cells(val):
 # Display or save styled DataFrame
 # Convert styled DataFrame to HTML
 #html = styled_df.render()
+# Function to add metrics to the list
+metrics_list = []
+def add_metrics(metric_value):
+    global metrics_list
+    metrics_list.append(metric_value)
+    return f"Added metric: {metric_value}"
+
 
 
 css = """
@@ -399,16 +419,16 @@ with gr.Blocks(theme= gr.themes.Soft(), css=css,) as demo:
             traffic_plot = gr.Plot()
             traffic_plot.update(value = update_plot("traffic"))
 
-    # with gr.Column():
-    #     with gr.Row():
-    #         reset_button = gr.Button(size="sm", value="Reset")
-    #         reset_button.click(reset_plot, 
-    #                            outputs=[revenue_plot,
-    #                                      profit_plot,
-    #                                      sales_plot,
-    #                                      traffic_plot,
-    #                                      conversion_rate_plot,
-    #                                      average_check_plot])
+    with gr.Column():
+        with gr.Row():
+            reset_button = gr.Button(size="sm", value="Reset")
+            reset_button.click(reset_plot, 
+                               outputs=[revenue_plot,
+                                         profit_plot,
+                                         sales_plot,
+                                         traffic_plot,
+                                         conversion_rate_plot,
+                                         average_check_plot])
     with gr.Column(equal_height=True):
         with gr.Row(equal_height=True):
 
@@ -425,8 +445,13 @@ with gr.Blocks(theme= gr.themes.Soft(), css=css,) as demo:
         with gr.Row(equal_height=True):
             gr.Markdown("""# Need more Metrics? """)
         with gr.Row():
-            gr.Textbox(label="Metrics", placeholder= 'Submit a metrics here...')
-            gr.Button(size="sm", value="Submit")
+            metrics_textbox_inp = gr.Textbox(label="Metrics", placeholder= 'Submit a metrics here...')
+            metrics_textbox_out = gr.Textbox(label = None)
+            submit_button = gr.Button("Run")
+            submit_button.click(fn = add_metrics, inputs=[metrics_textbox_inp], outputs=[metrics_textbox_out])
+          
+                        
+            #gr.Button(size="sm", value="Submit")
     with gr.Column(equal_height=True):
         quadrant_plot = gr.Plot()
         quadrant_button = gr.Button(size="sm", value="Quadrant")
