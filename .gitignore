@@ -8,7 +8,7 @@ __pycache__/
 .vscode/
 # ignore .pyc files
 *.pyc
-
+wandb/
 # C extensions
 *.so
 /.coverage
