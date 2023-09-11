@@ -118,6 +118,8 @@ class DemandCurveTrainer:
             plt.figure()
             plt.title(f'Feature importances for quantile {q}')
             sorted_idx = self.models[q].feature_importances_.argsort()
+            print(f"Debug: sorted_idx: {sorted_idx}")
+            print(f"Debug: X_train.columns: {self.X_train.columns}")
             plt.barh(self.X_train.columns[sorted_idx], self.models[q].feature_importances_[sorted_idx])
             plt.xlabel("LGBM Feature Importance")
             plt.show()
