@@ -78,7 +78,7 @@ class FeatureEngineeringProcess:
         self,
         df: pd.DataFrame,
         date_feature: str,
-        features: List[str] = ["month", "day"],
+        features: List[str],
     ):
         """Aggregate datetime features
 
