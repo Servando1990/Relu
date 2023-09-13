@@ -6,25 +6,31 @@ from scipy.fftpack import fft
 import numpy as np
 
 class SeasonalityInspector:
-    def __init__(self):
-        pass
-    
-    def plot_time_series(self, data, date_column, target_column):
+    def __init__(self, date_column, target_column):
+        self.date_column = date_column
+        self.target_column = target_column
+
+    def reindex_dataframe(self, data):
+        complete_date_range = pd.date_range(data[self.date_column].min(), data[self.date_column].max())
+        data_reindexed = data.set_index(self.date_column).reindex(complete_date_range).fillna(0).reset_index().rename(columns={'index': self.date_column})
+        return data_reindexed
+        
+    def plot_time_series(self, data):
         plt.figure(figsize=(10, 4))
-        plt.plot(data[date_column], data[target_column])
+        plt.plot(data[self.date_column], data[self.target_column])
         plt.title('Time Series Plot')
         plt.xlabel('Date')
-        plt.ylabel(target_column)
+        plt.ylabel(self.target_column)
         plt.show()
     
-    def plot_decomposition(self, data, date_column, target_column, period):
-        ts_data = data[[date_column, target_column]].set_index(date_column)
+    def plot_decomposition(self, data, period):
+        ts_data = data[[self.date_column, self.target_column]].set_index(self.date_column)
         result = seasonal_decompose(ts_data, period=period)
         result.plot()
         plt.show()
-    
-    def plot_autocorrelation(self, data, target_column, lags=40):
-        plot_acf(data[target_column], lags=lags)
+     
+    def plot_autocorrelation(self, data, lags):
+        plot_acf(data[self.target_column], lags=lags)
         plt.show()
 
 
