@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch
 
+#TODO I'm not sure if this is the right way to add embeddings. The dimension incereases instead of decreasing.
 class EmbeddingModel(nn.Module):
     def __init__(self, embedding_dims):
         super(EmbeddingModel, self).__init__()
