@@ -7,7 +7,7 @@ import logging
 
 
 
-#TODO Remove logging because we are using Weight and Biases
+
 
 class FeatureEngineeringProcess:
     def __init__(self):
@@ -78,7 +78,7 @@ class FeatureEngineeringProcess:
         self,
         df: pd.DataFrame,
         date_feature: str,
-        features: List[str] = ["month", "day"],
+        features: List[str],
     ):
         """Aggregate datetime features
 
@@ -139,9 +139,14 @@ class FeatureEngineeringProcess:
         return df
     
 
+    # TODO Implement an optimal N function and feature engineering for most important u_v pairs
     def price_sales_correlation_features_updated(self, data: pd.DataFrame, 
                                      N: int,
-                                     uv_pairs = List[Tuple[float, float]]) -> pd.DataFrame:
+                                     uv_pairs = List[Tuple[float, float]],
+                                     sku_column: str = 'SKU',
+                                     date_column: str = 'date',
+                                     price_column: str = 'price',
+                                     sales_colmn: str = 'sales') -> pd.DataFrame:
         
         """Compute the price-sales correlation features for a given range of u and v values
 
@@ -156,10 +161,10 @@ class FeatureEngineeringProcess:
         """
         
         # Sort data by SKU and date
-        data = data.sort_values(by=['SKU', 'Date']) 
+        data = data.sort_values(by=[sku_column, date_column]) 
 
         # Group the data by SKU
-        grouped = data.groupby('SKU')
+        grouped = data.groupby(sku_column)
 
         # Placeholder DataFrame for the results
         results = pd.DataFrame()
@@ -175,13 +180,13 @@ class FeatureEngineeringProcess:
                     #[-1,1/2]
                     #[1,1]
                 # Calculate the numerator part of the formula
-                numerator = (group['price']**u * group['sales']**v).rolling(window=N).sum()
+                numerator = (group[price_column]**u * group[sales_colmn]**v).rolling(window=N).sum()
 
                 # Calculate the sum of price to the power of u over the last N days
-                sum_price_u = (group['price']**u).rolling(window=N).sum()
+                sum_price_u = (group[price_column]**u).rolling(window=N).sum()
 
                 # Calculate the sum of sales to the power of v over the last N days
-                sum_sales_v = (group['sales']**v).rolling(window=N).sum()
+                sum_sales_v = (group[sales_colmn]**v).rolling(window=N).sum()
 
                 # Calculate the feature f_corr for this combination of u and v
                 f_corr = numerator / (sum_price_u * sum_sales_v)
@@ -199,11 +204,16 @@ class FeatureEngineeringProcess:
         
         return results
     
+    # TODO Should I add a function to calculate optimal window_sizes and lonf_period?
     def normalize_features(
             self, 
             data: pd.DataFrame, 
             window_sizes: List[int], 
-            long_period: int ) -> pd.DataFrame:
+            long_period: int,
+            sku_column: str,
+            date_column: str,
+            price_column:str,
+            sales_column:str  ) -> pd.DataFrame:
         # Generate docstring
         """ Normalize features for pricing model.  
         Args:
@@ -219,9 +229,9 @@ class FeatureEngineeringProcess:
         
         
         # Sort data by SKU and date
-        data = data.sort_values(by=['SKU', 'Date'])
+        data = data.sort_values(by=[sku_column, date_column])
 
-        grouped = data.groupby('SKU')
+        grouped = data.groupby(sku_column)
 
         # Placeholder list for the results
         results = []
@@ -229,8 +239,8 @@ class FeatureEngineeringProcess:
         for sku, group in grouped:               
             
             # Calculate reference price and demand
-            price0 = group['price'].rolling(window=long_period).mean()
-            demand0 = group['sales'].rolling(window=long_period).mean()
+            price0 = group[price_column].rolling(window=long_period).mean()
+            demand0 = group[sales_column].rolling(window=long_period).mean()
 
             # Use ffill  the NaNs with the last valid observation
             price0 = price0.fillna(method='ffill')
@@ -247,8 +257,8 @@ class FeatureEngineeringProcess:
             for N in window_sizes:
 
                 # Calculate average price and sales for the last N days
-                group[f'avg_price_last_{N}_days'] = group['price'].rolling(window=N).mean()
-                group[f'avg_sales_last_{N}_days'] = group['sales'].rolling(window=N).mean()
+                group[f'avg_price_last_{N}_days'] = group[price_column].rolling(window=N).mean()
+                group[f'avg_sales_last_{N}_days'] = group[sales_column].rolling(window=N).mean()
     
                 # Normalize average price and sales
                 #group[f'normalized_avg_price_{N}_days'] = group[f'avg_price_last_{N}_days'] / price0
@@ -259,8 +269,8 @@ class FeatureEngineeringProcess:
                 group[f'normalized_log_avg_sales_{N}_days'] = np.log(group[f'avg_sales_last_{N}_days'] / demand0)
 
                 # Normalize standard deviation
-                group[f'normalized_std_price_{N}_days'] = group['price'].rolling(window=N).std() / group[f'avg_price_last_{N}_days']
-                group[f'normalized_std_sales_{N}_days'] = group['sales'].rolling(window=N).std() / group[f'avg_sales_last_{N}_days']
+                group[f'normalized_std_price_{N}_days'] = group[price_column].rolling(window=N).std() / group[f'avg_price_last_{N}_days']
+                group[f'normalized_std_sales_{N}_days'] = group[sales_column].rolling(window=N).std() / group[f'avg_sales_last_{N}_days']
 
                 #  Drop 'avg_price_last_N_days' and 'avg_sales_last_N_days' columns
                 group = group.drop(columns=[f'avg_price_last_{N}_days', f'avg_sales_last_{N}_days'])
@@ -281,16 +291,19 @@ class FeatureEngineeringProcess:
                              N: int,
                              threshold: float = 0.05, 
                              removal_percentage: float = 0.98,
+                             sku_column: str = 'SKU',
+                             date_column: str = 'date',
+                                price_column: str = 'price',
                              ) -> pd.DataFrame:
     
         # Sort the data by SKU and date
-        data = data.sort_values(by=['SKU', 'Date'])
+        data = data.sort_values(by=[sku_column, date_column])
         
         # Calculate the N-day average price
-        data[f'avg_price_last_{N}_days'] = data.groupby('SKU')['price'].transform(lambda x: x.rolling(window=N).mean())
+        data[f'avg_price_last_{N}_days'] = data.groupby(sku_column)[price_column].transform(lambda x: x.rolling(window=N).mean())
         
         # Calculate the absolute percentage difference between the current price and the N-day average price
-        data['price_variation'] = abs(data['price'] - data[f'avg_price_last_{N}_days']) / data[f'avg_price_last_{N}_days']
+        data['price_variation'] = abs(data[price_column] - data[f'avg_price_last_{N}_days']) / data[f'avg_price_last_{N}_days']
 
         # Identify rows where the price varied by less than the threshold from the N-day average price
         stability_periods = (data['price_variation'] < threshold)
@@ -305,7 +318,7 @@ class FeatureEngineeringProcess:
         # By default this df is going to capture the first N days of the window
         # Example: N=7 until the 7th day avg_price_last_n_day is going to be empty
         # TODO See if insufficient data has other cases than the first N days
-        insufficient_data = data[data[f'avg_price_last_{N}_days'].isna() & data['price'].notna()]
+        insufficient_data = data[data[f'avg_price_last_{N}_days'].isna() & data[price_column].notna()]
 
         # Drop "avg_price_last_N_days" and "price_variation" columns
         data = data.drop(columns=[f'avg_price_last_{N}_days', 'price_variation'])

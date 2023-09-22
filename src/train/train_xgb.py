@@ -4,7 +4,7 @@ import pandas as pd
 import time
 import numpy as np
 import wandb
-#TODO this script doenst work, it needs to be fixed
+
 xgb_wnb = modal.Image.debian_slim().pip_install("pandas==1.4.2", "xgboost", "scikit-learn", "wandb")
 stub = modal.Stub("xgb_weight_and_biases")
 
