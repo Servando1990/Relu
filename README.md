@@ -1,12 +1,6 @@
-# TODO updated this Readme
----
-title: Relu
-app_file: app.py
-sdk: gradio
-sdk_version: 3.35.2
----
 
-# Relu Pricing Model
+
+# Relu Demand Curve & Pricing Model
 
 ## Description
 
@@ -14,7 +8,6 @@ Relu is a SaaS company that uses AI to help companies price their products. The 
 
 Curreently the model is an Xgboost model that takes in a variety of features and outputs a price. The model is trained on a open source dataset of historical pricing data. The model is is trained with Modal instances and the dashboard is deployed using Gradio on Hugging Face spaces
 
-This is version 0.1 for demostration purposes only. The model is not production ready.
 
 ## Project Structure
 
@@ -23,7 +16,7 @@ This is version 0.1 for demostration purposes only. The model is not production 
 ├── data
 │   ├── raw
 │   ├── processed
-│   └── interim
+│   └── results
 ├── notebooks
 ├── reports
 ├── requirements.txt
@@ -37,6 +30,7 @@ This is version 0.1 for demostration purposes only. The model is not production 
 ├── environment.yml
 └── Makefile
 └── requements.in
+└── requements.txt
 ```
 
 ## Setup Instructions
@@ -59,7 +53,7 @@ This is a private repository. Please request access from the owner.
 ### Step 2: Create and Activate the Conda Environment
 
 ```bash
-make setup
+conda env create -f environment.yml
 ```
 This command will create a conda environment named relu based on the environment.yml file and activate it.
 
@@ -79,23 +73,13 @@ Module:
 ```bash
 feature_engineering.py
 ```
-is used to create new features. The data is stored in the data/processed folder.
+is used to create new features
 
-### Step 6: Perfom inference and run pricing optimization.
+### Step 6: Train & Evalaute model.
 
-Run the following command to perform inference and run pricing optimization.
+class ```DemandCurveTrainer``` found in ```src.train.quantile_trainnin.py``` is used to train and evaluate a quantile regression approach for demand curve predictions. The model is evaluated using the validation set.
 
-```bash
-python src/train/train_modal.py
-```
-You will need to create and account with Modal and request access to a token to the owner or create a new token in your Modal account.
 
-### Step 7: Deploy the dashboard
+### Step 7: Run Pricing algorithm
 
-Run the following command to deploy the dashboard.
-
-```bash
-python src/app.py
-```
-You will need to create and account with Hugging Face spaces and request access to Relu Organization to the owner.
-
+class ```PricingOptimizer``` found in ```src.pricing.pricing_algorithm.py``` is used to run the pricing algorithm. The pricing algorithm takes in a trained model and a set of features and outputs a a optimal price with its corresponding sku.
