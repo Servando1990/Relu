@@ -62,7 +62,7 @@ class PricingOptimizer:
                          left_lambda:float =3,
                            right_lambda: float =5,
                                max_iterations: int =1000,
-                                 lambda_accuracy: float =0.2):
+                                 lambda_accuracy: float =0.2) :
         """
         Performs a binary search to find the optimal lambda value that maximizes profit.
         """
@@ -77,8 +77,10 @@ class PricingOptimizer:
             else:
                 right_lambda = lambda_value
             iterations += 1
+        
+        sku_prices = {sku: price for sku, price in zip(self.demand_curves.keys(), prices)}
 
-        return prices, lambda_value
+        return sku_prices, lambda_value
     
 
 
