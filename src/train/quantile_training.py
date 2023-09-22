@@ -5,7 +5,8 @@ import optuna
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 # import Dict
-from typing import Dict
+from typing import Dict, List, Tuple
+
 
 
 class DemandCurveTrainer:
