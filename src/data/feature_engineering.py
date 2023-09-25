@@ -317,7 +317,7 @@ class FeatureEngineeringProcess:
         # Create a separate DataFrame for rows with insufficient data
         # By default this df is going to capture the first N days of the window
         # Example: N=7 until the 7th day avg_price_last_n_day is going to be empty
-        # TODO See if insufficient data has other cases than the first N days
+
         insufficient_data = data[data[f'avg_price_last_{N}_days'].isna() & data[price_column].notna()]
 
         # Drop "avg_price_last_N_days" and "price_variation" columns
