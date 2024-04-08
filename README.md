@@ -1,10 +1,9 @@
 
 
-# Relu Demand Curve & Pricing Model
+# Demand Curve & Pricing Model
 
 ## Description
 
-Relu is a SaaS company that uses AI to help companies price their products. The company has a service that provides pricing recommendations for new products based on a variety of factors. The company is looking to improve the pricing model by incorporating additional data and using a more sophisticated model.
 
 Curreently the model is an Xgboost model that takes in a variety of features and outputs a price. The model is trained on a open source dataset of historical pricing data. The model is is trained with Modal instances and the dashboard is deployed using Gradio on Hugging Face spaces
 
